@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviator Vision AI v4.1 - Real-Time Quant Engine</title>
+  <title>Aviator Vision AI v4.2 - Core Quant Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
         </div>
         <div>
           <h1 id="headerTitre" class="font-bold text-base leading-tight tracking-wide text-white">Zone En Attente</h1>
-          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Activez la caméra pour démarrer l'analyse</p>
+          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Saisissez ou scannez vos tirages</p>
         </div>
       </div>
       <div class="text-right">
@@ -31,40 +31,32 @@
 
   <main class="max-w-2xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. SCANNER CAMÉRA TEMPS RÉEL + CAPTURE PHOTO -->
+    <!-- 1. SCANNER CAMÉRA PROTOTYPE + SAISIE -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-      <div class="flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-camera text-rose-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra / Photo</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra Temps Réel</h2>
         </div>
-        <div class="flex gap-2">
-          <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
-            <i class="fa-solid fa-video"></i> Activer Flux
-          </button>
-          <label class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-2 rounded-xl transition-all shadow-lg shadow-amber-600/20 flex items-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-camera-retro"></i> Photo
-            <input type="file" accept="image/*" capture="environment" onchange="analyserPhotoImportee(event)" class="hidden">
-          </label>
-        </div>
+        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-video"></i> Activer Caméra
+        </button>
       </div>
 
-      <!-- Viseur Caméra & Overlay OCR -->
+      <!-- Viseur Caméra Direct -->
       <div class="relative w-full h-64 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
         <video id="videoFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
         <canvas id="ocrCanvas" class="hidden"></canvas>
 
-        <div id="camPlaceholder" class="text-center p-5 space-y-2">
-          <i class="fa-solid fa-expand text-4xl text-slate-600 animate-pulse block"></i>
+        <div id="camPlaceholder" class="text-center p-5">
+          <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3 animate-pulse"></i>
           <p class="text-xs text-slate-400 font-medium">Pointez la caméra vers l'historique de la manche Aviator</p>
-          <p id="camDebugStatus" class="text-[11px] text-amber-400 font-mono bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20 inline-block">
-            Système prêt
-          </p>
+          <p class="text-[10px] text-slate-500 mt-1">Spribe Dark Mode • Analyse temps réel</p>
         </div>
 
         <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
-          <span class="text-[10px] bg-slate-900/90 text-amber-300 px-2.5 py-1 rounded border border-amber-500/40 font-mono font-bold">CADRAGE AUTOMATIQUE SPRIBE</span>
-          <div id="ocrStatus" class="text-[10px] bg-slate-800 text-slate-200 px-2.5 py-1 rounded font-mono font-bold">OCR Chargement...</div>
+          <span class="text-[10px] bg-slate-900/90 text-amber-300 px-2.5 py-1 rounded border border-amber-500/40 font-mono font-bold">CADRAGE SPRIBE</span>
+          <div id="ocrStatus" class="text-[10px] bg-slate-800 text-slate-200 px-2.5 py-1 rounded font-mono font-bold">OCR Prêt</div>
         </div>
       </div>
 
@@ -83,14 +75,14 @@
         <label class="block text-xs text-slate-400">Saisie manuelle rapide :</label>
         <div class="flex gap-2">
           <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 2.15" onkeypress="if(event.key==='Enter') ajouterMultiplicateurManuel()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
-          <button onclick="ajouterMultiplicateurManuel()" class="bg-slate-800 hover:bg-slate-700 px-4 rounded-xl font-bold text-xs text-white">
+          <button onclick="ajouterMultiplicateurManuel()" class="bg-rose-600 hover:bg-rose-500 px-4 rounded-xl font-bold text-xs text-white transition-all shadow-lg shadow-rose-600/20">
             + Ajouter
           </button>
         </div>
       </div>
     </div>
 
-    <!-- 2. TABLEAU DE BORD QUANTITATIF (CIBLE ≥ 2.00x) -->
+    <!-- 2. TABLEAU DE BORD QUANTITATIF -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
@@ -172,7 +164,7 @@
           <span id="patternTitle" class="font-mono text-purple-400 font-bold">---</span>
         </div>
         <p id="patternMatchResult" class="text-xs text-slate-300 leading-relaxed">
-          Scannez la grille de jeu pour rechercher des répétitions historiques.
+          Saisissez vos tirages pour analyser les motifs répétitifs.
         </p>
       </div>
 
@@ -195,26 +187,20 @@
     let autoScanInterval = null;
     let isProcessingFrame = false;
 
-    // --- INIT OCR ---
+    // --- INITIALISATION OCR ---
     async function initOCRWorker() {
-      const status = document.getElementById('ocrStatus');
-      status.innerText = "Chargement OCR...";
       try {
         ocrWorker = await Tesseract.createWorker('eng');
         await ocrWorker.setParameters({
           tesseract_char_whitelist: '0123456789.xX',
         });
-        status.innerText = "OCR Spribe Prêt";
-        status.className = "text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold";
       } catch (e) {
-        status.innerText = "Erreur OCR";
-        status.className = "text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-mono font-bold";
+        console.log("Erreur chargement Tesseract OCR", e);
       }
     }
-
     initOCRWorker();
 
-    // --- CAMÉRA TEMPS RÉEL + GESTION ERREUR ---
+    // --- ACCÈS CAMÉRA DIRECT ET SIMPLIFIÉ (PROTOTYPE INTIAL) ---
     async function toggleCamera() {
       const video = document.getElementById('videoFeed');
       const placeholder = document.getElementById('camPlaceholder');
@@ -222,142 +208,213 @@
       const btn = document.getElementById('btnCam');
       const btnScanOnce = document.getElementById('btnScanOnce');
       const btnAuto = document.getElementById('btnAutoScan');
-      const debugStatus = document.getElementById('camDebugStatus');
 
       if (streamCamera) {
-        if (autoScanInterval) clearInterval(autoScanInterval);
+        if (autoScanInterval) {
+          clearInterval(autoScanInterval);
+          autoScanInterval = null;
+        }
         streamCamera.getTracks().forEach(track => track.stop());
         streamCamera = null;
         video.classList.add('hidden');
         overlay.classList.add('hidden');
         placeholder.classList.remove('hidden');
-        btn.innerHTML = '<i class="fa-solid fa-video"></i> Activer Flux';
+        btn.innerHTML = '<i class="fa-solid fa-video"></i> Activer Caméra';
         btnScanOnce.disabled = true;
         btnAuto.disabled = true;
-        debugStatus.innerText = "Caméra arrêtée";
       } else {
-        debugStatus.innerText = "Démarrage caméra...";
-
-        const constraintsList = [
-          { video: { facingMode: { ideal: "environment" } } },
-          { video: { facingMode: "environment" } },
-          { video: true }
-        ];
-
-        streamCamera = null;
-        let lastError = null;
-
-        for (let c of constraintsList) {
-          try {
-            streamCamera = await navigator.mediaDevices.getUserMedia(c);
-            if (streamCamera) break;
-          } catch (err) {
-            lastError = err;
-          }
-        }
-
-        if (!streamCamera) {
-          const errName = lastError ? (lastError.name || lastError.message) : 'Inconnu';
-          debugStatus.innerText = "Erreur Android: " + errName;
-          alert("L'accès flux vidéo est bloqué par Android (" + errName + ").\n\nUtilisez le bouton 'Photo' juste à côté pour capturer la grille de jeu directement !");
-          return;
-        }
-
-        video.srcObject = streamCamera;
-        video.setAttribute("playsinline", true);
-        video.setAttribute("autoplay", true);
-        video.setAttribute("muted", true);
-
         try {
-          await video.play();
+          streamCamera = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: "environment" } },
+            audio: false
+          });
+
+          video.srcObject = streamCamera;
           video.classList.remove('hidden');
-          overlay.classList.remove('hidden');
           placeholder.classList.add('hidden');
-          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Flux';
+          overlay.classList.remove('hidden');
+          
+          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Caméra';
           btnScanOnce.disabled = false;
           btnAuto.disabled = false;
-          debugStatus.innerText = "Caméra active";
-        } catch (playErr) {
-          debugStatus.innerText = "Erreur lecture: " + playErr.message;
+
+          await video.play();
+        } catch (err) {
+          alert("Erreur Caméra (" + err.name + ") : " + err.message + "\n\nAssurez-vous d'avoir autorisé l'accès dans les paramètres Chrome.");
         }
       }
     }
 
-    // --- CAPTURE PHOTO ALTERNATIVE (100% FONCTIONNELLE SUR TOUS LES PHONES) ---
-    async function analyserPhotoImportee(event) {
-      const file = event.target.files[0];
-      if (!file || !ocrWorker) return;
+    // --- SAISIE MANUELLE IMMEDIATE ---
+    function ajouterMultiplicateurManuel() {
+      const input = document.getElementById('inputMultiplier');
+      const val = parseFloat(input.value);
 
-      const debugStatus = document.getElementById('camDebugStatus');
-      debugStatus.innerText = "Analyse photo en cours...";
+      if (isNaN(val) || val < 1.0) {
+        alert("Entrez un multiplicateur valide (ex: 2.15)");
+        return;
+      }
 
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = async () => {
-        const canvas = document.getElementById('ocrCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-
-        try {
-          const result = await ocrWorker.recognize(canvas);
-          const matches = result.data.text.match(/\b\d{1,4}\.\d{1,2}\b/g);
-
-          if (matches && matches.length > 0) {
-            let recs = matches.map(parseFloat).filter(v => v >= 1.0 && v <= 10000.0);
-            let ajouts = 0;
-            recs.forEach(v => {
-              if (!sequence.includes(v)) {
-                sequence.unshift(v);
-                ajouts++;
-              }
-            });
-            actualiserToutesLesAnalyses();
-            debugStatus.innerText = `${recs.length} multiplicateur(s) extrait(s)`;
-          } else {
-            debugStatus.innerText = "Aucune valeur détectée sur la photo";
-            alert("Aucun chiffre trouvé sur la photo. Assurez-vous que l'historique Aviator est bien net.");
-          }
-        } catch (e) {
-          debugStatus.innerText = "Erreur lecture photo";
-        }
-      };
+      sequence.unshift(val);
+      input.value = '';
+      actualiserToutesLesAnalyses();
     }
 
-    // --- TRAITEMENT OCR FLUX VIDÉO ---
+    // --- CALCUL DES INDICATEURS EN TEMPS RÉEL (DÈS 1 TIRAGE) ---
+    function actualiserToutesLesAnalyses() {
+      document.getElementById('countTirages').innerText = sequence.length;
+      
+      // 1. Mise à jour des badges d'historique
+      const container = document.getElementById('historiqueBadges');
+      if (sequence.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>';
+      } else {
+        container.innerHTML = sequence.map(val => {
+          let color = "bg-blue-500/20 text-blue-300 border-blue-500/40";
+          if (val >= 100.0) color = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold";
+          else if (val >= 10.0) color = "bg-pink-500/20 text-pink-300 border-pink-500/40";
+          else if (val >= 2.0) color = "bg-purple-500/20 text-purple-300 border-purple-500/40";
+          return `<span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${color}">${val.toFixed(2)}x</span>`;
+        }).join('');
+      }
+
+      // 2. Écarts de couleurs
+      calculerEcartsCouleurs();
+
+      // 3. Calculs statistiques & Matrice
+      analyserMatriceRisqueEtHeader();
+
+      // 4. Recherche de patterns
+      analyserMotifsIdentiques();
+    }
+
+    function getColorType(val) {
+      if (val < 2.0) return 'blue';
+      if (val < 10.0) return 'purple';
+      if (val < 100.0) return 'pink';
+      return 'green';
+    }
+
+    function calculerEcartsCouleurs() {
+      let gapB = sequence.findIndex(v => v < 2.0);
+      let gapP = sequence.findIndex(v => v >= 2.0 && v < 10.0);
+      let gapPk = sequence.findIndex(v => v >= 10.0 && v < 100.0);
+      let gapG = sequence.findIndex(v => v >= 100.0);
+
+      document.getElementById('gapBlue').innerText = gapB === -1 ? `${sequence.length}+` : `${gapB} tour${gapB > 1 ? 's' : ''}`;
+      document.getElementById('gapPurple').innerText = gapP === -1 ? `${sequence.length}+` : `${gapP} tour${gapP > 1 ? 's' : ''}`;
+      document.getElementById('gapPink').innerText = gapPk === -1 ? `${sequence.length}+` : `${gapPk} tour${gapPk > 1 ? 's' : ''}`;
+      document.getElementById('gapGreen').innerText = gapG === -1 ? `${sequence.length}+` : `${gapG} tour${gapG > 1 ? 's' : ''}`;
+    }
+
+    function analyserMatriceRisqueEtHeader() {
+      const topHeader = document.getElementById('topDynamicHeader');
+      const iconBg = document.getElementById('headerIconBg');
+      const icon = document.getElementById('headerIcon');
+      const titre = document.getElementById('headerTitre');
+      const sousTitre = document.getElementById('headerSousTitre');
+      const badgeZ = document.getElementById('badgeZScoreHeader');
+
+      if (sequence.length === 0) {
+        topHeader.className = "bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300";
+        icon.className = "fa-solid fa-shield-halved";
+        titre.innerText = "Zone En Attente";
+        sousTitre.innerText = "Saisissez ou scannez vos tirages";
+        badgeZ.innerText = "Z: 0.00";
+        document.getElementById('rateTarget').innerText = "0.0%";
+        document.getElementById('valeurVolatilite').innerText = "0.00";
+        document.getElementById('clusterDensity').innerText = "0 consécutifs";
+        document.getElementById('kellyAdvice').innerText = "0.0%";
+        return;
+      }
+
+      // Taux Obtenu >= 2.00x
+      const targetMatches = sequence.filter(v => v >= 2.0).length;
+      const rateTargetVal = (targetMatches / sequence.length) * 100;
+      document.getElementById('rateTarget').innerText = rateTargetVal.toFixed(1) + "%";
+
+      // Volatilité Logarithmique
+      let stdDev = 0.0;
+      if (sequence.length > 1) {
+        const logVals = sequence.map(v => Math.log(v));
+        const mean = logVals.reduce((a, b) => a + b, 0) / logVals.length;
+        const variance = logVals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / logVals.length;
+        stdDev = Math.sqrt(variance);
+      }
+      document.getElementById('valeurVolatilite').innerText = stdDev.toFixed(2);
+      
+      const labelVol = document.getElementById('labelVolatilite');
+      if (stdDev > 1.2) labelVol.innerText = "Haute Instabilité";
+      else if (stdDev < 0.7) labelVol.innerText = "Série Fluide";
+      else labelVol.innerText = "Régime Neutre";
+
+      // Densité Grappe Crash (< 2.00x consécutifs)
+      let consecutiveBlues = 0;
+      for (let i = 0; i < sequence.length; i++) {
+        if (sequence[i] < 2.0) consecutiveBlues++;
+        else break;
+      }
+      document.getElementById('clusterDensity').innerText = `${consecutiveBlues} consécutif${consecutiveBlues > 1 ? 's' : ''}`;
+
+      // Z-Score Dynamique
+      const sampleSize = Math.min(sequence.length, 10);
+      const recentSample = sequence.slice(0, sampleSize);
+      const countBluesRecent = recentSample.filter(v => v < 2.0).length;
+      const zScore = ((countBluesRecent / sampleSize) - 0.515) / Math.sqrt((0.515 * 0.485) / sampleSize);
+      badgeZ.innerText = `Z: ${zScore > 0 ? '+' : ''}${zScore.toFixed(2)}`;
+
+      // Conseil Kelly
+      let pReal = (targetMatches / sequence.length);
+      let kelly = (pReal * 1 - (1 - pReal)) / 1;
+      let kellyAdj = Math.max(0, Math.min(0.025, kelly * 0.25));
+      document.getElementById('kellyAdvice').innerText = (kellyAdj * 100).toFixed(1) + "%";
+
+      // Mise à jour visuelle du Header selon l'état du risque
+      if (consecutiveBlues >= 3 || stdDev > 1.25) {
+        topHeader.className = "bg-gradient-to-r from-rose-950 via-rose-900 to-slate-900 border-b border-rose-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-rose-900/30 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-xl text-rose-400 shadow-lg shadow-rose-500/20 animate-pulse";
+        icon.className = "fa-solid fa-triangle-exclamation";
+        titre.innerText = "🔴 ZONE À RISQUE ÉLEVÉ";
+        sousTitre.innerText = "Accumulation de crashes (<2x). Abstention conseillée.";
+      } 
+      else if (zScore <= -0.8 && stdDev < 0.95) {
+        topHeader.className = "bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-900 border-b border-emerald-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-emerald-900/30 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xl text-emerald-400 shadow-lg shadow-emerald-500/20";
+        icon.className = "fa-solid fa-circle-check";
+        titre.innerText = "🟢 ZONE FAVORABLE (Convergence)";
+        sousTitre.innerText = "Fenêtre statistique propice au retour vers la moyenne.";
+      } 
+      else {
+        topHeader.className = "bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 border-b border-blue-500/40 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-blue-900/20 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-xl text-blue-400 shadow-lg shadow-blue-500/20";
+        icon.className = "fa-solid fa-scale-balanced";
+        titre.innerText = "🔵 ZONE NEUTRE / ÉQUILIBRÉE";
+        sousTitre.innerText = "Distribution régulière alignée avec le comportement théorique.";
+      }
+    }
+
+    // --- OCR SCAN ---
     async function capturerEtAnalyserFrame() {
       if (!streamCamera || !ocrWorker || isProcessingFrame) return;
 
       isProcessingFrame = true;
       const status = document.getElementById('ocrStatus');
-      status.innerText = "Lecture Grille...";
+      status.innerText = "Analyse...";
       status.className = "text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-mono font-bold";
 
       const video = document.getElementById('videoFeed');
       const canvas = document.getElementById('ocrCanvas');
       const ctx = canvas.getContext('2d');
 
-      const srcW = video.videoWidth;
-      const srcH = video.videoHeight;
-
-      if (!srcW || !srcH) {
+      if (!video.videoWidth || !video.videoHeight) {
         isProcessingFrame = false;
         return;
       }
 
-      canvas.width = srcW;
-      canvas.height = srcH;
-      ctx.drawImage(video, 0, 0, srcW, srcH);
-
-      let imgData = ctx.getImageData(0, 0, srcW, srcH);
-      let d = imgData.data;
-      for (let i = 0; i < d.length; i += 4) {
-        let maxColor = Math.max(d[i], d[i+1], d[i+2]);
-        let v = (maxColor > 85) ? 255 : 0;
-        d[i] = v; d[i + 1] = v; d[i + 2] = v;
-      }
-      ctx.putImageData(imgData, 0, 0);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       try {
         const result = await ocrWorker.recognize(canvas);
@@ -378,10 +435,10 @@
             if (navigator.vibrate) navigator.vibrate(80);
           }
         }
-        status.innerText = "OCR Spribe Prêt";
+        status.innerText = "OCR Prêt";
         status.className = "text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold";
       } catch (err) {
-        status.innerText = "Erreur Lecture";
+        status.innerText = "Erreur OCR";
         status.className = "text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-mono font-bold";
       } finally {
         isProcessingFrame = false;
@@ -406,19 +463,71 @@
       }
     }
 
-    // --- SAISIE MANUELLE ---
-    function ajouterMultiplicateurManuel() {
-      const input = document.getElementById('inputMultiplier');
-      const val = parseFloat(input.value);
+    // --- ARCHIVES ET MOTIFS ---
+    function chargerSessionsSauvegardees() {
+      return JSON.parse(localStorage.getItem('aviator_sessions_history') || '[]');
+    }
 
-      if (isNaN(val) || val < 1.0) {
-        alert("Entrez un multiplicateur valide (ex: 2.15)");
+    function sauvegarderSession() {
+      if (sequence.length === 0) {
+        alert("Ajoutez des tirages avant d'enregistrer.");
+        return;
+      }
+      let history = chargerSessionsSauvegardees();
+      history.push({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR'),
+        data: [...sequence]
+      });
+      localStorage.setItem('aviator_sessions_history', JSON.stringify(history));
+      actualiserToutesLesAnalyses();
+      alert("Session enregistrée !");
+    }
+
+    function effacerSessionActuelle() {
+      if (sequence.length === 0) return;
+      if (confirm("Réinitialiser les tirages actuels ?")) {
+        sequence = [];
+        actualiserToutesLesAnalyses();
+      }
+    }
+
+    function analyserMotifsIdentiques() {
+      const history = chargerSessionsSauvegardees();
+      document.getElementById('savedCount').innerText = `${history.length} session(s)`;
+
+      if (sequence.length < 3) {
+        document.getElementById('patternTitle').innerText = "---";
+        document.getElementById('patternMatchResult').innerText = "Saisissez au moins 3 tirages pour rechercher des motifs.";
         return;
       }
 
-      sequence.unshift(val);
-      input.value = '';
-      actualiserToutesLesAnalyses();
+      const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
+      document.getElementById('patternTitle').innerText = motifActuel.toUpperCase();
+
+      let occurrences = 0;
+      let suiviDeuxPlus = 0;
+
+      history.forEach(sess => {
+        const sData = sess.data;
+        for (let i = 0; i < sData.length - 3; i++) {
+          let sub = sData.slice(i, i + 3).map(getColorType).join('-');
+          if (sub === motifActuel) {
+            occurrences++;
+            if (sData[i + 3] >= 2.0) suiviDeuxPlus++;
+          }
+        }
+      });
+
+      if (occurrences === 0) {
+        document.getElementById('patternMatchResult').innerText = `Motif [${motifActuel}] non répertorié dans vos archives.`;
+      } else {
+        let pct = ((suiviDeuxPlus / occurrences) * 100).toFixed(1);
+        document.getElementById('patternMatchResult').innerHTML = `Motif trouvé <strong>${occurrences} fois</strong>. Dans <strong>${pct}%</strong> des cas, le tirage suivant était <strong>≥ 2.00x</strong>.`;
+      }
     }
 
-    function effacerSessionActuelle()
+    actualiserToutesLesAnalyses();
+  </script>
+</body>
+</html>
