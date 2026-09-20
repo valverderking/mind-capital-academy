@@ -3,10 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviator Vision AI v5.0 - Correlated Probability Engine</title>
+  <title>Aviator Vision AI v6.1 - Version Optimisée</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.8); }
+    }
+    .zone-sure-active {
+      animation: pulse-green 1.5s infinite;
+    }
+  </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12 font-sans">
 
@@ -18,7 +27,7 @@
         </div>
         <div>
           <h1 id="headerTitre" class="font-bold text-base leading-tight tracking-wide text-white">Zone En Attente</h1>
-          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Analyse de tendance en cours</p>
+          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Saisissez ou scannez les tirages</p>
         </div>
       </div>
       <div class="text-right">
@@ -28,42 +37,16 @@
     </div>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 mt-5 space-y-5">
+  <main class="max-w-2xl mx-auto px-4 mt-5 space-y-6">
 
-    <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-cyan-500/30 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
-      <div class="flex items-center justify-between mb-3">
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <i class="fa-solid fa-brain text-cyan-400 animate-pulse"></i>
-          <h2 class="text-xs font-bold text-cyan-300 uppercase tracking-wider">Moteur de Corrélation Predictive</h2>
+          <i class="fa-solid fa-camera text-amber-400"></i>
+          <h2 class="text-xs font-bold text-amber-300 uppercase tracking-wider">AXE 1 : Acquisition & Scanner Caméra</h2>
         </div>
-        <span id="signalConfidence" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Calcul Ponderé</span>
-      </div>
-
-      <div class="flex flex-col items-center justify-center my-3">
-        <p class="text-xs text-slate-400 mb-1">Probabilité estimée du tour suivant (≥ 2.00x) :</p>
-        <div class="flex items-baseline gap-2">
-          <span id="mainProbaValue" class="text-4xl font-extrabold font-mono text-cyan-400 tracking-tight">48.5%</span>
-          <span id="probaTrendIcon" class="text-lg text-slate-500"><i class="fa-solid fa-minus"></i></span>
-        </div>
-
-        <div class="w-full bg-slate-950 h-3.5 rounded-full mt-3 p-0.5 border border-slate-800 overflow-hidden">
-          <div id="probaProgressBar" class="bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 48.5%;"></div>
-        </div>
-      </div>
-
-      <div id="decisionBox" class="mt-4 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
-        <p id="decisionText" class="text-xs font-semibold text-slate-300">Saisissez vos premiers tirages pour initialiser l'algorithme prédictif.</p>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-camera text-rose-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Capture & Saisie</h2>
-        </div>
-        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
-          <i class="fa-solid fa-video"></i> Activer Caméra
+        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-2 rounded-xl transition-all shadow-lg shadow-amber-600/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-video"></i> Démarrer Caméra
         </button>
       </div>
 
@@ -72,12 +55,12 @@
         <canvas id="ocrCanvas" class="hidden"></canvas>
 
         <div id="camPlaceholder" class="text-center p-5">
-          <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3 animate-pulse"></i>
-          <p class="text-xs text-slate-400 font-medium">Pointez la caméra vers l'historique de la manche Aviator</p>
+          <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3"></i>
+          <p class="text-xs text-slate-400 font-medium">Flux caméra inactif. Assurez-vous d'utiliser un lien <strong>HTTPS</strong> sur mobile.</p>
         </div>
 
-        <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
-          <span class="text-[10px] bg-slate-900/90 text-amber-300 px-2.5 py-1 rounded border border-amber-500/40 font-mono font-bold">CADRAGE SPRIBE</span>
+        <div id="camOverlay" class="hidden absolute inset-x-6 inset-y-8 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
+          <span class="text-[10px] bg-slate-900/90 text-amber-300 px-2.5 py-1 rounded border border-amber-500/40 font-mono font-bold">CADREZ LES MULTIPLICATEURS</span>
           <div id="ocrStatus" class="text-[10px] bg-slate-800 text-slate-200 px-2.5 py-1 rounded font-mono font-bold">OCR Prêt</div>
         </div>
       </div>
@@ -92,108 +75,83 @@
       </div>
 
       <div class="space-y-1 pt-2 border-t border-slate-800">
-        <label class="block text-xs text-slate-400">Saisie manuelle rapide :</label>
+        <label class="block text-xs text-slate-400">Entrée manuelle rapide :</label>
         <div class="flex gap-2">
-          <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 2.15" onkeypress="if(event.key==='Enter') ajouterMultiplicateurManuel()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
-          <button onclick="ajouterMultiplicateurManuel()" class="bg-rose-600 hover:bg-rose-500 px-4 rounded-xl font-bold text-xs text-white transition-all shadow-lg shadow-rose-600/20">
+          <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 2.15" onkeypress="if(event.key==='Enter') ajouterMultiplicateurManuel()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+          <button onclick="ajouterMultiplicateurManuel()" class="bg-amber-600 hover:bg-amber-500 px-4 rounded-xl font-bold text-xs text-white transition-all">
             + Ajouter
           </button>
         </div>
       </div>
-    </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <span class="text-xs text-slate-400">Historique capturé (Échantillon : <strong id="countTirages" class="text-white">0</strong>)</span>
+          <button onclick="effacerSessionActuelle()" class="text-[10px] text-rose-400 hover:underline">Réinitialiser</button>
+        </div>
+        <div id="historiqueBadges" class="flex flex-wrap gap-2 min-h-[42px] p-2.5 bg-slate-950 rounded-xl border border-slate-800 items-center">
+          <span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <i class="fa-solid fa-chart-line text-cyan-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Indicateurs Composants</h2>
-        </div>
-        <span class="text-xs text-slate-400">Échantillon : <strong id="countTirages" class="text-white">0</strong></span>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Taux Obtenu (≥ 2.00x)</p>
-          <p id="rateTarget" class="text-xl font-bold font-mono text-cyan-400">0.0%</p>
-          <p class="text-[9px] text-slate-500 mt-0.5">Théorique : 48.5%</p>
-        </div>
-
-        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Z-Score (Retour Moyenne)</p>
-          <p id="valeurZScore" class="text-xl font-bold font-mono text-amber-400">0.00</p>
-          <p id="labelZScore" class="text-[9px] text-slate-500 mt-0.5">Distribution Équilibrée</p>
+          <i class="fa-solid fa-brain text-cyan-400"></i>
+          <h2 class="text-xs font-bold text-cyan-300 uppercase tracking-wider">AXE 2 : Moteur Prédictif & Indicateurs</h2>
         </div>
       </div>
 
+      <div id="probaCardContainer" class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-2 transition-all">
+        <p class="text-xs text-slate-400">Probabilité finale calculée pour le tour suivant (≥ 2.00x) :</p>
+        <div class="flex items-center justify-center gap-3">
+          <span id="mainProbaValue" class="text-4xl font-extrabold font-mono text-cyan-400">48.5%</span>
+          <span id="probaTrendIcon" class="text-xl text-slate-500"><i class="fa-solid fa-minus"></i></span>
+        </div>
+
+        <div class="w-full bg-slate-900 h-3.5 rounded-full p-0.5 border border-slate-800 overflow-hidden mt-2">
+          <div id="probaProgressBar" class="bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 48.5%;"></div>
+        </div>
+
+        <div id="decisionBox" class="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
+          <p id="decisionText" class="text-xs text-slate-300">Entrez vos données pour générer la recommandation finale.</p>
+        </div>
+      </div>
+
       <div class="grid grid-cols-2 gap-3">
-        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Crashes Consécutifs (&lt;2x)</p>
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400">Taux Réel Obtenu (≥ 2.00x)</p>
+          <p id="rateTarget" class="text-lg font-bold font-mono text-cyan-400">0.0%</p>
+          <p class="text-[9px] text-slate-500">Théorique Spribe : 48.5%</p>
+        </div>
+
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400">Z-Score (Retour Moyenne)</p>
+          <p id="valeurZScore" class="text-lg font-bold font-mono text-amber-400">0.00</p>
+          <p id="labelZScore" class="text-[9px] text-slate-500">Distribution Neutre</p>
+        </div>
+
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400">Série Crashes (&lt; 2.00x)</p>
           <p id="clusterDensity" class="text-lg font-bold font-mono text-rose-400">0 consécutif</p>
-          <p class="text-[9px] text-slate-500 mt-0.5">Risque de grappe</p>
+          <p class="text-[9px] text-slate-500">Effet Grappe</p>
         </div>
 
-        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Conseil Kelly (Mise Max)</p>
-          <p id="kellyAdvice" class="text-lg font-bold font-mono text-emerald-400">0.0%</p>
-          <p class="text-[9px] text-slate-500 mt-0.5">Gestion de capital</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Écarts depuis le dernier tirage :</h2>
-      <div class="grid grid-cols-4 gap-2 text-center">
-        <div class="p-2 bg-blue-500/10 border border-blue-500/20 rounded-xl">
-          <p class="text-[9px] text-blue-300 font-bold uppercase">Bleu (&lt;2x)</p>
-          <p id="gapBlue" class="text-base font-bold font-mono text-blue-400 mt-1">0 tour</p>
-        </div>
-        <div class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl">
-          <p class="text-[9px] text-purple-300 font-bold uppercase">Violet (2-9.9x)</p>
-          <p id="gapPurple" class="text-base font-bold font-mono text-purple-400 mt-1">0 tour</p>
-        </div>
-        <div class="p-2 bg-pink-500/10 border border-pink-500/20 rounded-xl">
-          <p class="text-[9px] text-pink-300 font-bold uppercase">Rose (10-99x)</p>
-          <p id="gapPink" class="text-base font-bold font-mono text-pink-400 mt-1">0 tour</p>
-        </div>
-        <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-          <p class="text-[9px] text-emerald-300 font-bold uppercase">Vert (100x+)</p>
-          <p id="gapGreen" class="text-base font-bold font-mono text-emerald-400 mt-1">0 tour</p>
+        <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400">Recherche de Motif (Session)</p>
+          <p id="patternTitle" class="text-sm font-bold font-mono text-purple-400">---</p>
+          <p id="patternMatchResult" class="text-[9px] text-slate-400 truncate">Séquence 3 derniers</p>
         </div>
       </div>
 
-      <div id="historiqueBadges" class="flex flex-wrap gap-2 min-h-[42px] p-2.5 bg-slate-950 rounded-xl border border-slate-800 items-center mt-3">
-        <span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>
-      </div>
-    </div>
-
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-floppy-disk text-emerald-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Archives & Motifs</h2>
-        </div>
-        <span id="savedCount" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">0 sessions</span>
-      </div>
-
-      <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
-        <div class="flex justify-between items-center text-xs">
-          <span class="text-slate-400">Motif Actuel (3 derniers) :</span>
-          <span id="patternTitle" class="font-mono text-purple-400 font-bold">---</span>
-        </div>
-        <p id="patternMatchResult" class="text-xs text-slate-300 leading-relaxed">
-          Saisissez vos tirages pour vérifier l'historique des motifs.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="sauvegarderSession()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
-          <i class="fa-solid fa-download"></i> Sauvegarder Session
-        </button>
-        <button onclick="effacerSessionActuelle()" class="bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
-          <i class="fa-solid fa-trash-can"></i> Réinitialiser
+      <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+        <span id="savedCount" class="text-xs font-mono text-emerald-400">0 session(s) sauvegardée(s)</span>
+        <button onclick="sauvegarderSession()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk"></i> Enregistrer Session
         </button>
       </div>
-    </div>
+    </section>
 
   </main>
 
@@ -204,18 +162,18 @@
     let autoScanInterval = null;
     let isProcessingFrame = false;
 
-    // INITIALISATION OCR
+    // INIT OCR
     async function initOCRWorker() {
       try {
         ocrWorker = await Tesseract.createWorker('eng');
         await ocrWorker.setParameters({ tesseract_char_whitelist: '0123456789.xX' });
       } catch (e) {
-        console.log("Erreur initialisation OCR", e);
+        console.error("Erreur initialisation OCR :", e);
       }
     }
     initOCRWorker();
 
-    // DÉCLENCHEMENT CAMÉRA DIRECT
+    // AXE 1 : ACCÈS CAMÉRA OPTIMISÉ (MOBILE/DESKTOP)
     async function toggleCamera() {
       const video = document.getElementById('videoFeed');
       const placeholder = document.getElementById('camPlaceholder');
@@ -225,54 +183,136 @@
       const btnAuto = document.getElementById('btnAutoScan');
 
       if (streamCamera) {
-        if (autoScanInterval) {
-          clearInterval(autoScanInterval);
-          autoScanInterval = null;
-        }
+        if (autoScanInterval) clearInterval(autoScanInterval);
+        autoScanInterval = null;
         streamCamera.getTracks().forEach(track => track.stop());
         streamCamera = null;
+
         video.classList.add('hidden');
         overlay.classList.add('hidden');
         placeholder.classList.remove('hidden');
-        btn.innerHTML = '<i class="fa-solid fa-video"></i> Activer Caméra';
+        btn.innerHTML = '<i class="fa-solid fa-video"></i> Démarrer Caméra';
         btnScanOnce.disabled = true;
         btnAuto.disabled = true;
       } else {
         try {
-          streamCamera = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: "environment" } },
-            audio: false
-          });
+          // Tentative 1 : Caméra arrière spécifique mobile
+          try {
+            streamCamera = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: { exact: "environment" } },
+              audio: false
+            });
+          } catch (e) {
+            // Tentative 2 : Caméra arrière générique
+            streamCamera = await navigator.mediaDevices.getUserMedia({
+              video: { facingMode: "environment" },
+              audio: false
+            });
+          }
+
           video.srcObject = streamCamera;
           video.classList.remove('hidden');
           placeholder.classList.add('hidden');
           overlay.classList.remove('hidden');
-          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Caméra';
+
+          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Arrêter Caméra';
           btnScanOnce.disabled = false;
           btnAuto.disabled = false;
+
           await video.play();
         } catch (err) {
-          alert("Erreur Caméra : " + err.message);
+          alert("Erreur Caméra : " + err.message + "\nAssurez-vous que l'application est ouverte via HTTPS.");
         }
       }
     }
 
-    // SAISIE MANUELLE
+    // CAPTURE ET OPTIMISATION D'IMAGE AVANT OCR
+    async function capturerEtAnalyserFrame() {
+      if (!streamCamera || !ocrWorker || isProcessingFrame) return;
+
+      isProcessingFrame = true;
+      const status = document.getElementById('ocrStatus');
+      status.innerText = "Scan...";
+      status.className = "text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-mono font-bold";
+
+      const video = document.getElementById('videoFeed');
+      const canvas = document.getElementById('ocrCanvas');
+      const ctx = canvas.getContext('2d');
+
+      if (!video.videoWidth || !video.videoHeight) {
+        isProcessingFrame = false;
+        return;
+      }
+
+      // Recadrage ROI (Center Crop) pour améliorer la vitesse et éviter les bruits
+      const cropWidth = video.videoWidth * 0.7;
+      const cropHeight = video.videoHeight * 0.5;
+      const startX = (video.videoWidth - cropWidth) / 2;
+      const startY = (video.videoHeight - cropHeight) / 2;
+
+      canvas.width = cropWidth;
+      canvas.height = cropHeight;
+      ctx.drawImage(video, startX, startY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+      try {
+        const result = await ocrWorker.recognize(canvas);
+        const matches = result.data.text.match(/\b\d{1,4}\.\d{1,2}\b/g);
+
+        if (matches && matches.length > 0) {
+          let recs = matches.map(parseFloat).filter(v => v >= 1.0 && v <= 10000.0);
+          let nbrAjouts = 0;
+          recs.forEach(v => {
+            if (!sequence.includes(v)) {
+              sequence.unshift(v);
+              nbrAjouts++;
+            }
+          });
+
+          if (nbrAjouts > 0) {
+            executerTraitementAxe2();
+            if (navigator.vibrate) navigator.vibrate(60);
+          }
+        }
+        status.innerText = "OCR Prêt";
+        status.className = "text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold";
+      } catch (err) {
+        status.innerText = "Erreur OCR";
+        status.className = "text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-mono font-bold";
+      } finally {
+        isProcessingFrame = false;
+      }
+    }
+
+    function lancerScanInstantane() { capturerEtAnalyserFrame(); }
+
+    function toggleAutoScan() {
+      const btn = document.getElementById('btnAutoScan');
+      if (autoScanInterval) {
+        clearInterval(autoScanInterval);
+        autoScanInterval = null;
+        btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Auto-Scan Continu';
+        btn.className = "bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
+      } else {
+        autoScanInterval = setInterval(capturerEtAnalyserFrame, 1800);
+        btn.innerHTML = '<i class="fa-solid fa-stop"></i> Arrêter Auto-Scan';
+        btn.className = "bg-rose-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
+      }
+    }
+
     function ajouterMultiplicateurManuel() {
       const input = document.getElementById('inputMultiplier');
       const val = parseFloat(input.value);
 
       if (isNaN(val) || val < 1.0) {
-        alert("Entrez un multiplicateur valide (ex: 2.15)");
+        alert("Saisissez un multiplicateur valide (ex: 2.15)");
         return;
       }
 
       sequence.unshift(val);
       input.value = '';
-      actualiserToutesLesAnalyses();
+      executerTraitementAxe2();
     }
 
-    // UTILS COULEURS SPRIBE
     function getColorType(val) {
       if (val < 2.0) return 'blue';
       if (val < 10.0) return 'purple';
@@ -280,25 +320,24 @@
       return 'green';
     }
 
-    // MOTEUR DE CORRÉLATION : PROBABILITÉ EN POURCENTAGE (%)
-    function calculerProbabiliteProchainTour() {
+    // AXE 2 : MOTEUR STATISTIQUE & MATRICE DE DÉCISION
+    function calculerProbabiliteCorrelee() {
       if (sequence.length === 0) return 48.5;
 
-      let baseProb = 48.5; // Probabilité théorique fondatrice (Spribe 2.00x)
+      let baseProb = 48.5;
 
-      // 1. Momentum Récent (Échantillon des 10 derniers)
+      // 1. Momentum Récent
       const sample10 = sequence.slice(0, Math.min(sequence.length, 10));
       const wins10 = sample10.filter(v => v >= 2.0).length;
       const recentWinRate = (wins10 / sample10.length) * 100;
-      let momentumFactor = (recentWinRate - 48.5) * 0.20;
+      let momentumBonus = (recentWinRate - 48.5) * 0.25;
 
-      // 2. Z-Score (Pression statistique de retour à la moyenne)
-      const bluesCount = sample10.filter(v => v < 2.0).length;
-      const zScoreVal = ((bluesCount / sample10.length) - 0.515) / Math.sqrt((0.515 * 0.485) / sample10.length);
-      // Si Z-Score est élevé (beaucoup de bleus récents), forte probabilité de rebond vers un violet
-      let zScoreBonus = zScoreVal * 7.5;
+      // 2. Z-Score
+      const countBlues = sample10.filter(v => v < 2.0).length;
+      const zScoreVal = ((countBlues / sample10.length) - 0.515) / Math.sqrt((0.515 * 0.485) / sample10.length);
+      let zScoreBonus = zScoreVal * 8.0;
 
-      // 3. Effet Séries / Crashes Consécutifs
+      // 3. Séries
       let consecutiveBlues = 0;
       for (let i = 0; i < sequence.length; i++) {
         if (sequence[i] < 2.0) consecutiveBlues++;
@@ -306,11 +345,11 @@
       }
 
       let streakBonus = 0;
-      if (consecutiveBlues === 1) streakBonus = 1.5;
-      else if (consecutiveBlues === 2) streakBonus = 6.0;
-      else if (consecutiveBlues >= 3) streakBonus = 14.0; // Pression de sortie de grappe
+      if (consecutiveBlues === 1) streakBonus = 2.0;
+      else if (consecutiveBlues === 2) streakBonus = 8.0;
+      else if (consecutiveBlues >= 3) streakBonus = 16.0;
 
-      // 4. Pattern Matching Historique (Sessions enregistrées)
+      // 4. Pattern Matching
       let patternBonus = 0;
       if (sequence.length >= 3) {
         const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
@@ -331,20 +370,18 @@
 
         if (occurrences >= 2) {
           let patternWinRate = (suiviDeuxPlus / occurrences) * 100;
-          patternBonus = (patternWinRate - 48.5) * 0.30;
+          patternBonus = (patternWinRate - 48.5) * 0.35;
         }
       }
 
-      // Synthèse corrélée
-      let probaCalculée = baseProb + momentumFactor + zScoreBonus + streakBonus + patternBonus;
-      return Math.max(8.0, Math.min(92.0, probaCalculée));
+      let probaCalculée = baseProb + momentumBonus + zScoreBonus + streakBonus + patternBonus;
+      return Math.max(5.0, Math.min(95.0, probaCalculée));
     }
 
-    // MISE À JOUR DE TOUS LES INDICATEURS
-    function actualiserToutesLesAnalyses() {
+    function executerTraitementAxe2() {
       document.getElementById('countTirages').innerText = sequence.length;
 
-      // 1. Badges d'historique
+      // Badges
       const container = document.getElementById('historiqueBadges');
       if (sequence.length === 0) {
         container.innerHTML = '<span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>';
@@ -358,18 +395,7 @@
         }).join('');
       }
 
-      // 2. Écarts de couleurs
-      let gapB = sequence.findIndex(v => v < 2.0);
-      let gapP = sequence.findIndex(v => v >= 2.0 && v < 10.0);
-      let gapPk = sequence.findIndex(v => v >= 10.0 && v < 100.0);
-      let gapG = sequence.findIndex(v => v >= 100.0);
-
-      document.getElementById('gapBlue').innerText = gapB === -1 ? `${sequence.length}+` : `${gapB} tour${gapB > 1 ? 's' : ''}`;
-      document.getElementById('gapPurple').innerText = gapP === -1 ? `${sequence.length}+` : `${gapP} tour${gapP > 1 ? 's' : ''}`;
-      document.getElementById('gapPink').innerText = gapPk === -1 ? `${sequence.length}+` : `${gapPk} tour${gapPk > 1 ? 's' : ''}`;
-      document.getElementById('gapGreen').innerText = gapG === -1 ? `${sequence.length}+` : `${gapG} tour${gapG > 1 ? 's' : ''}`;
-
-      // 3. Calculs Statistiques
+      // Métriques
       const targetMatches = sequence.filter(v => v >= 2.0).length;
       const rateTargetVal = sequence.length > 0 ? (targetMatches / sequence.length) * 100 : 0.0;
       document.getElementById('rateTarget').innerText = rateTargetVal.toFixed(1) + "%";
@@ -381,10 +407,150 @@
       }
       document.getElementById('clusterDensity').innerText = `${consecutiveBlues} consécutif${consecutiveBlues > 1 ? 's' : ''}`;
 
-      // Z-Score
       const sampleSize = Math.min(sequence.length, 10);
       let zScore = 0.0;
       if (sampleSize > 0) {
         const recentSample = sequence.slice(0, sampleSize);
         const countBluesRecent = recentSample.filter(v => v < 2.0).length;
-        zScore = ((countBluesRecent / sampleSize) - 0.51
+        zScore = ((countBluesRecent / sampleSize) - 0.515) / Math.sqrt((0.515 * 0.485) / sampleSize);
+      }
+      document.getElementById('valeurZScore').innerText = `${zScore > 0 ? '+' : ''}${zScore.toFixed(2)}`;
+
+      const labelZ = document.getElementById('labelZScore');
+      if (zScore > 1.0) labelZ.innerText = "Sous-performance (Rebond)";
+      else if (zScore < -1.0) labelZ.innerText = "Sur-performance (Momentum)";
+      else labelZ.innerText = "Distribution Neutre";
+
+      analyserMotifsIdentiques();
+
+      // Probabilité Finale
+      const proba = calculerProbabiliteCorrelee();
+      document.getElementById('probBadgeHeader').innerText = proba.toFixed(1) + "%";
+      document.getElementById('mainProbaValue').innerText = proba.toFixed(1) + "%";
+      document.getElementById('probaProgressBar').style.width = proba.toFixed(1) + "%";
+
+      const trendIcon = document.getElementById('probaTrendIcon');
+      if (proba >= 70.0) trendIcon.innerHTML = '<i class="fa-solid fa-arrow-trend-up text-emerald-400"></i>';
+      else if (proba < 45.0) trendIcon.innerHTML = '<i class="fa-solid fa-arrow-trend-down text-rose-400"></i>';
+      else trendIcon.innerHTML = '<i class="fa-solid fa-minus text-amber-400"></i>';
+
+      const topHeader = document.getElementById('topDynamicHeader');
+      const iconBg = document.getElementById('headerIconBg');
+      const icon = document.getElementById('headerIcon');
+      const titre = document.getElementById('headerTitre');
+      const sousTitre = document.getElementById('headerSousTitre');
+      const decBox = document.getElementById('decisionBox');
+      const decText = document.getElementById('decisionText');
+      const probaCard = document.getElementById('probaCardContainer');
+
+      if (sequence.length === 0) {
+        topHeader.className = "bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300";
+        icon.className = "fa-solid fa-shield-halved";
+        titre.innerText = "Zone En Attente";
+        sousTitre.innerText = "Saisissez ou scannez les tirages";
+        decText.innerText = "Entrez vos données pour générer la recommandation finale.";
+        probaCard.className = "p-4 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-2 transition-all";
+        return;
+      }
+
+      // MATRICE DE DÉCISION & VISUELS
+      if (proba >= 70.0) {
+        topHeader.className = "bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-900 border-b border-emerald-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-emerald-900/30 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xl text-emerald-400 shadow-lg shadow-emerald-500/20 animate-pulse";
+        icon.className = "fa-solid fa-circle-check";
+        titre.innerText = "🟢 ZONE SÛRE (ENTRÉE CONSEILLÉE)";
+        sousTitre.innerText = "Forte convergence des indicateurs vers un tirage ≥ 2.00x.";
+
+        probaCard.className = "p-4 bg-emerald-950/20 rounded-xl border border-emerald-500/50 text-center space-y-2 transition-all zone-sure-active";
+
+        decBox.className = "mt-3 p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-center";
+        decText.innerHTML = "🚀 <strong>RECOMMANDATION :</strong> Probabilité très élevée (<strong>" + proba.toFixed(1) + "%</strong>). Signal fort pour valider le tour suivant.";
+      }
+      else if (proba < 45.0 || consecutiveBlues >= 3) {
+        topHeader.className = "bg-gradient-to-r from-rose-950 via-rose-900 to-slate-900 border-b border-rose-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-rose-900/30 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-xl text-rose-400 shadow-lg shadow-rose-500/20";
+        icon.className = "fa-solid fa-triangle-exclamation";
+        titre.innerText = "🔴 ZONE À RISQUE ÉLEVÉ";
+        sousTitre.innerText = "Conditions défavorables ou série de crashes active.";
+
+        probaCard.className = "p-4 bg-rose-950/20 rounded-xl border border-rose-500/30 text-center space-y-2 transition-all";
+
+        decBox.className = "mt-3 p-3 rounded-xl bg-rose-950/50 border border-rose-500/40 text-center";
+        decText.innerHTML = "⚠️ <strong>ABSTENTION :</strong> Probabilité insuffisante (<strong>" + proba.toFixed(1) + "%</strong>). Risque de crash précoce.";
+      }
+      else {
+        topHeader.className = "bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 border-b border-blue-500/40 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-blue-900/20 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-xl text-blue-400 shadow-lg shadow-blue-500/20";
+        icon.className = "fa-solid fa-scale-balanced";
+        titre.innerText = "🔵 ZONE MODÉRÉE / NEUTRE";
+        sousTitre.innerText = "Zone d'observation. Probabilité proche de la moyenne.";
+
+        probaCard.className = "p-4 bg-slate-950 rounded-xl border border-slate-800 text-center space-y-2 transition-all";
+
+        decBox.className = "mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 text-center";
+        decText.innerHTML = "ℹ️ <strong>PRUDENCE :</strong> Probabilité actuelle à <strong>" + proba.toFixed(1) + "%</strong> (Sous le seuil Sûr de 70%). Attendez une meilleure opportunité.";
+      }
+    }
+
+    // ARCHIVES
+    function chargerSessionsSauvegardees() {
+      return JSON.parse(localStorage.getItem('aviator_sessions_history') || '[]');
+    }
+
+    function sauvegarderSession() {
+      if (sequence.length === 0) { alert("Aucun tirage à enregistrer."); return; }
+      let history = chargerSessionsSauvegardees();
+      history.push({ id: Date.now(), data: [...sequence] });
+      localStorage.setItem('aviator_sessions_history', JSON.stringify(history));
+      executerTraitementAxe2();
+      alert("Session archivée !");
+    }
+
+    function effacerSessionActuelle() {
+      if (sequence.length === 0) return;
+      if (confirm("Réinitialiser les données saisies ?")) {
+        sequence = [];
+        executerTraitementAxe2();
+      }
+    }
+
+    function analyserMotifsIdentiques() {
+      const history = chargerSessionsSauvegardees();
+      document.getElementById('savedCount').innerText = `${history.length} session(s) sauvegardée(s)`;
+
+      if (sequence.length < 3) {
+        document.getElementById('patternTitle').innerText = "---";
+        document.getElementById('patternMatchResult').innerText = "Séquence 3 derniers";
+        return;
+      }
+
+      const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
+      document.getElementById('patternTitle').innerText = motifActuel.toUpperCase();
+
+      let occurrences = 0;
+      let suiviDeuxPlus = 0;
+
+      history.forEach(sess => {
+        const sData = sess.data;
+        for (let i = 0; i < sData.length - 3; i++) {
+          let sub = sData.slice(i, i + 3).map(getColorType).join('-');
+          if (sub === motifActuel) {
+            occurrences++;
+            if (sData[i + 3] >= 2.0) suiviDeuxPlus++;
+          }
+        }
+      });
+
+      if (occurrences === 0) {
+        document.getElementById('patternMatchResult').innerText = "Inconnu en archive";
+      } else {
+        let pct = ((suiviDeuxPlus / occurrences) * 100).toFixed(0);
+        document.getElementById('patternMatchResult').innerText = `Vu ${occurrences}x (${pct}% ≥ 2x)`;
+      }
+    }
+
+    executerTraitementAxe2();
+  </script>
+</body>
+</html>
