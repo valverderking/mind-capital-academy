@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviator Vision AI v2.0 - Volatility & Quant Matrix</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12 font-sans">
+
+  <!-- Navbar -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
+          <i class="fa-solid fa-plane-departure text-white text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight tracking-wide text-white">Aviator Vision AI</h1>
+          <p class="text-xs text-slate-400">Analyse de Volatilité & Zones Gaussian</p>
+        </div>
+      </div>
+      <span class="text-xs bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-1 rounded-full font-mono font-medium">v2.0 Quant</span>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- INDICATEUR TRIPLE ZONE DE RISQUE -->
+    <div id="cardZoneRisque" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-3 transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Indicateur Matrice de Risque</span>
+        <span id="badgeLoiNormale" class="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded-full font-mono">Z-Score: 0.00</span>
+      </div>
+
+      <div class="flex items-center gap-4 py-2">
+        <div id="iconZone" class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl transition-all duration-300 shadow-lg">
+          <i class="fa-solid fa-shield-halved text-slate-400"></i>
+        </div>
+        <div class="flex-1">
+          <h2 id="titreZone" class="text-lg font-bold text-white">Initialisation...</h2>
+          <p id="descZone" class="text-xs text-slate-400 mt-0.5">Saisissez au moins 5 tirages pour activer la matrice de calcul.</p>
+        </div>
+      </div>
+
+      <!-- Barre de Volatilité -->
+      <div class="space-y-1 pt-2 border-t border-slate-800/80">
+        <div class="flex justify-between text-xs font-mono">
+          <span class="text-slate-400">Indice de Volatilité (σ) :</span>
+          <span id="valeurVolatilite" class="text-amber-400 font-bold">0.00</span>
+        </div>
+        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+          <div id="barreVolatilite" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. CAPTURE CAMÉRA & SAISIE RAPIDE -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-camera text-rose-400"></i>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Capture & Saisie Directe</h2>
+        </div>
+        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-video"></i> Caméra
+        </button>
+      </div>
+
+      <!-- Viseur Caméra -->
+      <div class="relative w-full h-44 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+        <video id="videoFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+        <div id="camPlaceholder" class="text-center p-4">
+          <i class="fa-solid fa-camera-retro text-3xl text-slate-600 mb-2"></i>
+          <p class="text-xs text-slate-500">Pointez la caméra vers le panneau des résultats du jeu</p>
+        </div>
+        <div id="camOverlay" class="hidden absolute inset-4 border-2 border-dashed border-rose-500/50 rounded-lg pointer-events-none flex items-center justify-center">
+          <span class="text-[10px] bg-slate-900/80 text-rose-300 px-2 py-1 rounded border border-rose-500/30">Zone de détection</span>
+        </div>
+      </div>
+
+      <!-- Saisie Manuelle Rapide -->
+      <div class="space-y-2">
+        <label class="block text-xs text-slate-400">Entrez un multiplicateur (ex: 1.45, 2.10, 12.50) :</label>
+        <div class="flex gap-2">
+          <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 5.20" onkeypress="if(event.key==='Enter') ajouterMultiplicateur()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+          <button onclick="ajouterMultiplicateur()" class="bg-rose-600 hover:bg-rose-500 px-5 rounded-xl font-bold text-sm text-white transition-all shadow-lg shadow-rose-600/20">
+            + Ajouter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. ESPACES DE COULEURS & ÉCARTS DE SÉQUENCE -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-layer-group text-purple-400"></i>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Espaces entre Couleurs (Écarts)</h2>
+        </div>
+        <span class="text-xs text-slate-400">Total : <strong id="countTirages" class="text-white">0</strong></span>
+      </div>
+
+      <!-- Métriques d'Écarts -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+          <p class="text-[10px] text-blue-300 font-bold uppercase">Bleu (&lt;2.0x)</p>
+          <p id="gapBlue" class="text-lg font-bold font-mono text-blue-400 mt-1">0 tour</p>
+          <p class="text-[9px] text-slate-500">depuis le dernier</p>
+        </div>
+
+        <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl">
+          <p class="text-[10px] text-purple-300 font-bold uppercase">Violet (2-9.9x)</p>
+          <p id="gapPurple" class="text-lg font-bold font-mono text-purple-400 mt-1">0 tour</p>
+          <p class="text-[9px] text-slate-500">depuis le dernier</p>
+        </div>
+
+        <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl">
+          <p class="text-[10px] text-rose-300 font-bold uppercase">Rose (10x+)</p>
+          <p id="gapPink" class="text-lg font-bold font-mono text-rose-400 mt-1">0 tour</p>
+          <p class="text-[9px] text-slate-500">depuis le dernier</p>
+        </div>
+      </div>
+
+      <!-- Liste visuelle des tirages actuels -->
+      <div id="historiqueBadges" class="flex flex-wrap gap-2 min-h-[42px] p-2.5 bg-slate-950 rounded-xl border border-slate-800 items-center">
+        <span class="text-xs text-slate-600 italic">Aucune donnée dans la session en cours.</span>
+      </div>
+    </div>
+
+    <!-- 3. MOTIFS IDENTIQUES & GESTION DES SESSIONS -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-floppy-disk text-emerald-400"></i>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Motifs & Sauvegarde Session</h2>
+        </div>
+        <span id="savedCount" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">0 sessions en mémoire</span>
+      </div>
+
+      <!-- Rapport du Motif Actuel -->
+      <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-slate-400">Analyse de la Séquence Actuelle (3 derniers) :</span>
+          <span id="patternTitle" class="font-mono text-purple-400 font-bold">---</span>
+        </div>
+        <p id="patternMatchResult" class="text-xs text-slate-300 leading-relaxed">
+          Saisissez des tirages pour détecter si ce schéma s'est déjà produit dans vos sessions enregistrées.
+        </p>
+      </div>
+
+      <!-- Actions de Sauvegarde -->
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <button onclick="sauvegarderSession()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-download"></i> Sauvegarder Session
+        </button>
+        <button onclick="effacerSessionActuelle()" class="bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-trash-can"></i> Vider la Session
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let sequence = [];
+    let streamCamera = null;
+
+    // --- ACTIVATION / DÉSACTIVATION CAMÉRA ---
+    async function toggleCamera() {
+      const video = document.getElementById('videoFeed');
+      const placeholder = document.getElementById('camPlaceholder');
+      const overlay = document.getElementById('camOverlay');
+      const btn = document.getElementById('btnCam');
+
+      if (streamCamera) {
+        streamCamera.getTracks().forEach(track => track.stop());
+        streamCamera = null;
+        video.classList.add('hidden');
+        overlay.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        btn.innerHTML = '<i class="fa-solid fa-video"></i> Caméra';
+      } else {
+        try {
+          streamCamera = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+          video.srcObject = streamCamera;
+          video.classList.remove('hidden');
+          overlay.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper';
+        } catch (err) {
+          alert("Erreur d'accès à la caméra du téléphone.");
+        }
+      }
+    }
+
+    // --- AJOUT DE MULTIPLICATEURS ---
+    function ajouterMultiplicateur() {
+      const input = document.getElementById('inputMultiplier');
+      const val = parseFloat(input.value);
+
+      if (isNaN(val) || val < 1.0) {
+        alert("Entrez un multiplicateur valide (ex: 2.15)");
+        return;
+      }
+
+      sequence.unshift(val); // Ajouter au début de la liste
+      input.value = '';
+      actualiserToutesLesAnalyses();
+    }
+
+    function effacerSessionActuelle() {
+      if (sequence.length === 0) return;
+      if (confirm("Voulez-vous effacer les tirages de la session en cours ?")) {
+        sequence = [];
+        actualiserToutesLesAnalyses();
+      }
+    }
+
+    // --- COULEURS ET ESPACES (GAP) ---
+    function getColorType(val) {
+      if (val < 2.0) return 'blue';
+      if (val < 10.0) return 'purple';
+      return 'pink';
+    }
+
+    function calculerEcartsCouleurs() {
+      let gapB = sequence.findIndex(v => v < 2.0);
+      let gapP = sequence.findIndex(v => v >= 2.0 && v < 10.0);
+      let gapPk = sequence.findIndex(v => v >= 10.0);
+
+      document.getElementById('gapBlue').innerText = gapB === -1 ? `${sequence.length}+` : `${gapB} tour${gapB > 1 ? 's' : ''}`;
+      document.getElementById('gapPurple').innerText = gapP === -1 ? `${sequence.length}+` : `${gapP} tour${gapP > 1 ? 's' : ''}`;
+      document.getElementById('gapPink').innerText = gapPk === -1 ? `${sequence.length}+` : `${gapPk} tour${gapPk > 1 ? 's' : ''}`;
+    }
+
+    // --- CALCUL DE LA VOLATILITÉ (ÉCART-TYPE) & MATRICE DE RISQUE ---
+    function analyserMatriceRisque() {
+      const card = document.getElementById('cardZoneRisque');
+      const icon = document.getElementById('iconZone');
+      const titre = document.getElementById('titreZone');
+      const desc = document.getElementById('descZone');
+      const badgeZ = document.getElementById('badgeLoiNormale');
+      const valVol = document.getElementById('valeurVolatilite');
+      const barVol = document.getElementById('barreVolatilite');
+
+      if (sequence.length < 4) {
+        titre.innerText = "Données insuffisantes";
+        desc.innerText = "Ajoutez au moins 4 à 5 tirages pour générer l'analyse de risque.";
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-3";
+        icon.className = "w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl text-slate-400";
+        icon.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+        valVol.innerText = "0.00";
+        barVol.style.width = "0%";
+        badgeZ.innerText = "Z-Score: 0.00";
+        return;
+      }
+
+      // 1. Ecart-type (Volatilité sur logarithmes pour réduire le poids des gros multiplicateurs)
+      const logVals = sequence.map(v => Math.log(v));
+      const mean = logVals.reduce((a, b) => a + b, 0) / logVals.length;
+      const variance = logVals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / logVals.length;
+      const stdDev = Math.sqrt(variance); // Volatilité
+
+      valVol.innerText = stdDev.toFixed(2);
+      barVol.style.width = Math.min(100, stdDev * 80) + "%";
+
+      // 2. Loi Normale & Z-Score de la moyenne récente
+      const recent4 = sequence.slice(0, 4);
+      const countBlues = recent4.filter(v => v < 2.0).length;
+      
+      // Calcul du Z-Score (déviation par rapport à la moyenne théorique d'un jeu crash avec p ~ 48.5%)
+      const zScore = ((countBlues / 4) - 0.515) / Math.sqrt((0.515 * 0.485) / 4);
+      badgeZ.innerText = `Z-Score: ${zScore > 0 ? '+' : ''}${zScore.toFixed(2)}`;
+
+      // 3. Détermination des 3 Zones : Rouge / Bleu / Vert
+      if (countBlues >= 3 || stdDev > 1.2) {
+        // ZONE À RISQUE (ROUGE)
+        card.className = "bg-rose-950/40 border border-rose-500/40 rounded-2xl p-5 shadow-2xl space-y-3";
+        icon.className = "w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-2xl shadow-lg";
+        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        titre.innerText = "🔴 ZONE À RISQUE ELEVÉ";
+        desc.innerText = "Série d'accumulation de crashes (Bleu) ou volatilité excessive. Forte probabilité de pertes consécutives.";
+      } 
+      else if (zScore <= -0.8 && stdDev < 0.9) {
+        // ZONE FAVORABLE (VERTE)
+        card.className = "bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 shadow-2xl space-y-3";
+        icon.className = "w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-2xl shadow-lg";
+        icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        titre.innerText = "🟢 ZONE FAVORABLE (Convergence)";
+        desc.innerText = "Compression statistique favorable. La série tend vers un rééquilibrage selon la loi normale.";
+      } 
+      else {
+        // ZONE NEUTRE (BLEU)
+        card.className = "bg-blue-950/30 border border-blue-500/30 rounded-2xl p-5 shadow-2xl space-y-3";
+        icon.className = "w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-2xl shadow-lg";
+        icon.innerHTML = '<i class="fa-solid fa-scale-balanced"></i>';
+        titre.innerText = "🔵 ZONE NEUTRE / STABLE";
+        desc.innerText = "Distribution régulière des tirages. Volatilité contenue et alignée avec le comportement théorique.";
+      }
+    }
+
+    // --- DÉTECTION DES MOTIFS IDENTIQUES ET SESSIONS ---
+    function chargerSessionsSauvegardees() {
+      return JSON.parse(localStorage.getItem('aviator_sessions_history') || '[]');
+    }
+
+    function sauvegarderSession() {
+      if (sequence.length < 3) {
+        alert("Ajoutez au moins 3 tirages avant d'enregistrer la session.");
+        return;
+      }
+
+      let history = chargerSessionsSauvegardees();
+      history.push({
+        id: Date.now(),
+        date: new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR'),
+        data: [...sequence]
+      });
+
+      localStorage.setItem('aviator_sessions_history', JSON.stringify(history));
+      actualiserToutesLesAnalyses();
+      alert("Session enregistrée avec succès dans la mémoire du téléphone !");
+    }
+
+    function analyserMotifsIdentiques() {
+      const history = chargerSessionsSauvegardees();
+      document.getElementById('savedCount').innerText = `${history.length} session(s) en mémoire`;
+
+      if (sequence.length < 3) {
+        document.getElementById('patternTitle').innerText = "---";
+        document.getElementById('patternMatchResult').innerText = "Entrez au moins 3 tirages pour rechercher des motifs similaires.";
+        return;
+      }
+
+      // Prendre le motif des 3 derniers tirages
+      const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
+      document.getElementById('patternTitle').innerText = motifActuel.toUpperCase();
+
+      let occurrences = 0;
+      let suiviVioletOuRose = 0;
+
+      // Chercher dans l'historique des sessions
+      history.forEach(sess => {
+        const sData = sess.data;
+        for (let i = 0; i < sData.length - 3; i++) {
+          let sub = sData.slice(i, i + 3).map(getColorType).join('-');
+          if (sub === motifActuel) {
+            occurrences++;
+            let suivant = sData[i + 3];
+            if (suivant >= 2.0) suiviVioletOuRose++;
+          }
+        }
+      });
+
+      if (occurrences === 0) {
+        document.getElementById('patternMatchResult').innerText = `Le motif [${motifActuel}] n'a pas encore d'occurrence enregistrée dans vos anciennes sessions.`;
+      } else {
+        let pct = ((suiviVioletOuRose / occurrences) * 100).toFixed(1);
+        document.getElementById('patternMatchResult').innerHTML = `Motif trouvé <strong>${occurrences} fois</strong> dans vos archives. Dans <strong>${pct}%</strong> des cas, le tirage suivant était <strong>≥ 2.0x (Violet/Rose)</strong>.`;
+      }
+    }
+
+    // --- MISE À JOUR GLOBALE ---
+    function actualiserToutesLesAnalyses() {
+      document.getElementById('countTirages').innerText = sequence.length;
+      
+      // Affichage des badges
+      const container = document.getElementById('historiqueBadges');
+      if (sequence.length === 0) {
+        container.innerHTML = '<span class="text-xs text-slate-600 italic">Aucune donnée dans la session en cours.</span>';
+      } else {
+        container.innerHTML = sequence.map(val => {
+          let color = "bg-blue-500/20 text-blue-300 border-blue-500/40";
+          if (val >= 10.0) color = "bg-rose-500/20 text-rose-300 border-rose-500/40";
+          else if (val >= 2.0) color = "bg-purple-500/20 text-purple-300 border-purple-500/40";
+          
+          return `<span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${color}">${val.toFixed(2)}x</span>`;
+        }).join('');
+      }
+
+      calculerEcartsCouleurs();
+      analyserMatriceRisque();
+      analyserMotifsIdentiques();
+    }
+
+    // Initialisation
+    actualiserToutesLesAnalyses();
+  </script>
+</body>
+  </html>
+  
