@@ -1,357 +1,359 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetMind AI Pro - Moteur Quantitatif & Biais Cognitif</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BetMind AI Pro - Moteur Quantitatif & Monte-Carlo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans pb-16">
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12 font-sans">
 
-    <!-- Navbar -->
-    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50 px-4 py-3.5">
-        <div class="max-w-2xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-indigo-600 to-cyan-500 p-2 rounded-xl shadow-lg shadow-indigo-500/20">
-                    <i class="fa-solid fa-brain text-white text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg tracking-wide bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">BetMind AI</h1>
-                    <p class="text-[10px] text-slate-400 font-medium">Algorithme Quantitatif & Monte-Carlo</p>
-                </div>
-            </div>
-            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                v2.0 Quant
-            </span>
+  <!-- Navbar -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <i class="fa-solid fa-brain text-white text-xl"></i>
         </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
-
-        <!-- SECTION 1: CÔTES ET MARKET MARGIN -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
-            <h2 class="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-chart-pie"></i> 1. Données Marché & Côtes Bookmaker
-            </h2>
-            
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Équipe A (Domicile)</label>
-                    <input type="text" id="teamA" value="Real Madrid" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Équipe B (Extérieur)</label>
-                    <input type="text" id="teamB" value="Barcelona" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Côte 1 (Dom)</label>
-                    <input type="number" step="0.01" id="odds1" value="2.05" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-emerald-400 focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Côte N (Nul)</label>
-                    <input type="number" step="0.01" id="oddsN" value="3.50" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-amber-400 focus:outline-none focus:border-indigo-500">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Côte 2 (Ext)</label>
-                    <input type="number" step="0.01" id="odds2" value="3.40" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-rose-400 focus:outline-none focus:border-indigo-500">
-                </div>
-            </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight tracking-wide text-white">BetMind AI</h1>
+          <p class="text-xs text-slate-400">Algorithme Quantitatif & Monte-Carlo</p>
         </div>
+      </div>
+      <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono font-medium">v2.0 Quant</span>
+    </div>
+  </header>
 
-        <!-- SECTION 2: VARIABLES CONTEXTUELLES AVANCÉES -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-            <h2 class="text-sm font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-sliders"></i> 2. Ajustement Contextuel & Poisson (xG)
-            </h2>
+  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
 
-            <!-- Puissance Offensives / xG estimé -->
-            <div class="grid grid-cols-2 gap-4 pt-2">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Dom)</label>
-                    <input type="number" step="0.1" id="xgA" value="1.8" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Ext)</label>
-                    <input type="number" step="0.1" id="xgB" value="1.3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm">
-                </div>
-            </div>
-
-            <!-- Fatigue & Absences -->
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Repos Équipe A</label>
-                    <select id="restA" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs">
-                        <option value="1.0">Normal (5+ jours)</option>
-                        <option value="0.92">Fatigue (Match il y a 3 jours)</option>
-                        <option value="0.85">Surcharge (3 matchs en 7j)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Repos Équipe B</label>
-                    <select id="restB" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs">
-                        <option value="1.0">Normal (5+ jours)</option>
-                        <option value="0.92">Fatigue (Match il y a 3 jours)</option>
-                        <option value="0.85">Surcharge (3 matchs en 7j)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Impact des Absences Majeures</label>
-                <select id="absences" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs">
-                    <option value="0">Aucune absence clé</option>
-                    <option value="-0.1">Absence 1 joueur majeur Dom (Buteur/Gardien)</option>
-                    <option value="0.1">Absence 1 joueur majeur Ext (Buteur/Gardien)</option>
-                    <option value="-0.2">Cadres absents Domicile (-20%)</option>
-                    <option value="0.2">Cadres absents Extérieur (-20%)</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- SECTION 3: BIAIS PSYCHOLOGIQUE & CAPITAL -->
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-            <h2 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-shield-cat"></i> 3. Biais du Parieur & Capital (Bankroll)
-            </h2>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Capital Total (FCFA / $)</label>
-                    <input type="number" id="bankroll" value="100000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-slate-200">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Choix du Pari</label>
-                    <select id="betTarget" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-semibold text-indigo-300">
-                        <option value="1">Victoire Équipe A (1)</option>
-                        <option value="N">Match Nul (N)</option>
-                        <option value="2">Victoire Équipe B (2)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
-                <div class="flex justify-between text-xs mb-1">
-                    <span class="text-slate-400">Niveau d'Affinité / Conviction Émotionnelle :</span>
-                    <span id="biasLabel" class="font-bold text-amber-400">Neutre (0%)</span>
-                </div>
-                <input type="range" id="biasInput" min="0" max="40" value="0" class="w-full accent-amber-500">
-                <p class="text-[11px] text-slate-500 mt-1">Plus votre attachement émotionnel est élevé, plus l'algorithme applique une pénalité de sécurité sur la côte.</p>
-            </div>
-        </div>
-
-        <!-- BOUTON SIMULATION -->
-        <button onclick="runSimulation()" class="w-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-emerald-500 hover:opacity-95 text-white font-bold py-4 rounded-2xl shadow-xl transition duration-200 flex items-center justify-center gap-3 text-base">
-            <i class="fa-solid fa-microchip text-lg"></i> Lancer la Simulation Quantil (1 000 Runs)
+    <!-- CHARGEMENT AUTOMATIQUE DES COTES (API) -->
+    <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5 shadow-xl">
+      <div class="flex items-center gap-2 mb-3">
+        <i class="fa-solid fa-bolt text-blue-400"></i>
+        <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Chargement Automatique en Direct</h2>
+      </div>
+      <div class="space-y-3">
+        <button type="button" onclick="chargerMatchsEnDirect()" id="btnApi" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 text-sm">
+          <i class="fa-solid fa-arrows-rotate"></i> Charger les matchs à venir
         </button>
+        <select id="listeMatchs" onchange="selectionnerMatch()" class="hidden w-full bg-slate-950 p-3 rounded-xl border border-slate-700 text-white text-sm focus:outline-none focus:border-blue-500">
+          <option value="">-- Sélectionnez un match disponible --</option>
+        </select>
+      </div>
+    </div>
 
-        <!-- DASHBOARD RÉSULTATS -->
-        <div id="resultsDashboard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
-            
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 class="font-bold text-slate-200 flex items-center gap-2 text-base">
-                    <i class="fa-solid fa-chart-column text-cyan-400"></i> Diagnostic Quantitatif
-                </h3>
-                <span id="simBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">1000 Runs Monte-Carlo</span>
-            </div>
+    <!-- SECTION 1: DONNÉES MARCHÉ & CÔTES BOOKMAKER -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i class="fa-solid fa-chart-pie text-indigo-400"></i>
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Données Marché & Côtés Bookmaker</h2>
+      </div>
 
-            <!-- Grille Métriques Clés -->
-            <div class="grid grid-cols-3 gap-3 text-center">
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <span class="block text-[11px] text-slate-400">Marge Bookmaker</span>
-                    <span id="resMargin" class="text-sm font-bold text-slate-200">0%</span>
-                </div>
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <span class="block text-[11px] text-slate-400">Valeur Espérée (EV)</span>
-                    <span id="resEV" class="text-sm font-bold text-emerald-400">+0.00%</span>
-                </div>
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                    <span class="block text-[11px] text-slate-400">Probabilité Réelle</span>
-                    <span id="resProbReal" class="text-sm font-bold text-cyan-400">0%</span>
-                </div>
-            </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Équipe A (Domicile)</label>
+          <input type="text" id="equipeA" value="Real Madrid" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Équipe B (Extérieur)</label>
+          <input type="text" id="equipeB" value="Barcelona" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
 
-            <!-- Comparaison des Probabilités -->
-            <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800/80">
-                <div class="flex justify-between text-xs">
-                    <span class="text-slate-400">Probabilité Implicite (Bookmaker) :</span>
-                    <span id="resProbBookie" class="font-bold">0%</span>
-                </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="barBookie" class="bg-slate-500 h-full w-0 transition-all duration-500"></div>
-                </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1 text-center">Côte 1 (Dom)</label>
+          <input type="number" step="0.01" id="cote1" value="2.05" class="w-full text-center font-mono font-bold text-emerald-400 bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1 text-center">Côte N (Nul)</label>
+          <input type="number" step="0.01" id="coteN" value="3.50" class="w-full text-center font-mono font-bold text-amber-400 bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1 text-center">Côte 2 (Ext)</label>
+          <input type="number" step="0.01" id="cote2" value="3.40" class="w-full text-center font-mono font-bold text-emerald-400 bg-slate-950 border border-slate-800 rounded-xl py-2.5 text-sm focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
+    </div>
 
-                <div class="flex justify-between text-xs pt-2">
-                    <span class="text-slate-400">Probabilité Ajustée (Poisson + Monte-Carlo) :</span>
-                    <span id="resProbMonte" class="font-bold text-emerald-400">0%</span>
-                </div>
-                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div id="barMonte" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
-                </div>
-            </div>
+    <!-- SECTION 2: AJUSTEMENT CONTEXTUEL & POISSON (XG) -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i class="fa-solid fa-sliders text-cyan-400"></i>
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Ajustement Contextuel & Poisson (xG)</h2>
+      </div>
 
-            <!-- Recommandation Financière & Kelly -->
-            <div id="decisionCard" class="p-4 rounded-xl border transition-all">
-                <div class="flex items-start gap-3">
-                    <i id="decisionIcon" class="fa-solid fa-circle-check text-2xl mt-0.5"></i>
-                    <div class="space-y-1">
-                        <h4 id="decisionTitle" class="font-bold text-sm"></h4>
-                        <p id="decisionText" class="text-xs opacity-90 leading-relaxed"></p>
-                        <div id="stakeRecommendation" class="text-xs font-bold pt-2 border-t border-white/10 mt-2"></div>
-                    </div>
-                </div>
-            </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Dom)</label>
+          <input type="number" step="0.1" id="xgA" value="1.8" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Ext)</label>
+          <input type="number" step="0.1" id="xgB" value="1.3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+      </div>
 
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Repos Équipe A</label>
+          <select id="reposA" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+            <option value="1.0">Normal (5+ jours)</option>
+            <option value="0.9">Fatigue (< 3 jours)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Repos Équipe B</label>
+          <select id="reposB" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+            <option value="1.0">Normal (5+ jours)</option>
+            <option value="0.9">Fatigue (< 3 jours)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Impact des Absences Majeures</label>
+        <select id="absences" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+          <option value="none">Aucune absence clé</option>
+          <option value="missingA">Buteur / Gardien clé absent Équipe A (-15% xG)</option>
+          <option value="missingB">Buteur / Gardien clé absent Équipe B (-15% xG)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECTION 3: BIAIS & CAPITAL -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center gap-2 mb-2">
+        <i class="fa-solid fa-shield-halved text-purple-400"></i>
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Gestion du Capital & Contrôle Anti-Biais</h2>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Capital Total Disponible</label>
+          <input type="number" id="capital" value="100000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Choix du Pari Cible</label>
+          <select id="choixPari" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+            <option value="1">Parier sur Équipe A (1)</option>
+            <option value="N">Parier sur Nul (N)</option>
+            <option value="2">Parier sur Équipe B (2)</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="text-xs text-slate-400">Niveau d'Intuition / Affinité (Anti-Biais)</label>
+          <span id="valeurBiais" class="text-xs font-mono text-purple-400">Neutre (0%)</span>
+        </div>
+        <input type="range" id="curseurAffinite" min="0" max="100" value="0" oninput="actualiserIndicateurBiais(this.value)" class="w-full accent-purple-500 bg-slate-950 rounded-lg cursor-pointer">
+      </div>
+
+      <button type="button" onclick="lancerSimulation()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-sm mt-4">
+        <i class="fa-solid fa-calculator"></i> Lancer la Simulation Quantile (1 000 Runs)
+      </button>
+    </div>
+
+    <!-- RÉSULTATS DE LA SIMULATION -->
+    <div id="zoneResultats" class="hidden bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-chart-line text-emerald-400"></i>
+          <h2 class="text-sm font-bold text-white uppercase tracking-wider">Résultats du Modèle Quant</h2>
+        </div>
+        <span id="badgeEV" class="text-xs px-2.5 py-1 rounded-full font-bold font-mono">EV: --</span>
+      </div>
+
+      <!-- Comparaison Probabilités -->
+      <div class="space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-slate-400">Probabilité Bookmaker :</span>
+          <span id="probBookmaker" class="font-mono text-slate-300">--%</span>
+        </div>
+        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+          <div id="barreBookmaker" class="bg-slate-600 h-full transition-all duration-500" style="width: 0%"></div>
         </div>
 
-    </main>
+        <div class="flex justify-between text-xs pt-2">
+          <span class="text-slate-400">Probabilité Réelle (Monte-Carlo) :</span>
+          <span id="probReelle" class="font-mono text-emerald-400 font-bold">--%</span>
+        </div>
+        <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+          <div id="barreReelle" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
 
-    <script>
-        document.getElementById('biasInput').addEventListener('input', (e) => {
-            const v = e.target.value;
-            let label = `Neutre (${v}%)`;
-            if (v > 10) label = `Modéré (${v}%)`;
-            if (v > 25) label = `Fort Biais - Risque Surévaluation (${v}%)`;
-            document.getElementById('biasLabel').innerText = label;
+      <!-- Conseil Kelly -->
+      <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-400 mb-0.5">Mise Recommandée (Kelly Ajusté)</p>
+          <p id="montantMise" class="text-lg font-bold font-mono text-emerald-400">0 FCFA</p>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-slate-400 mb-0.5">% du Capital</p>
+          <p id="pourcentageMise" class="text-sm font-mono font-bold text-slate-200">0.0%</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const API_KEY = "b48d4d05af6b2b2ebe7e3ba4976e88af";
+    let listeMatchsData = [];
+
+    // --- CHARGEMENT API ---
+    async function chargerMatchsEnDirect() {
+      const btn = document.getElementById('btnApi');
+      btn.innerText = "Chargement des cotes...";
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(`https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`);
+        if (!response.ok) throw new Error("Erreur API");
+
+        listeMatchsData = await response.json();
+        const select = document.getElementById('listeMatchs');
+        select.innerHTML = '<option value="">-- Choisissez un match disponible --</option>';
+
+        listeMatchsData.forEach((match, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = `${match.home_team} vs ${match.away_team}`;
+          select.appendChild(option);
         });
 
-        // Approximation Loi de Poisson
-        function poisson(k, lambda) {
-            let expNegLambda = Math.exp(-lambda);
-            let factorialK = 1;
-            for (let i = 1; i <= k; i++) factorialK *= i;
-            return (Math.pow(lambda, k) * expNegLambda) / factorialK;
-        }
+        select.classList.remove('hidden');
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Actualiser la liste';
+      } catch (err) {
+        alert("Erreur de chargement. Vérifiez votre clé d'accès ou vos crédits API.");
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Charger les matchs à venir';
+      } finally {
+        btn.disabled = false;
+      }
+    }
 
-        function runSimulation() {
-            const o1 = parseFloat(document.getElementById('odds1').value);
-            const oN = parseFloat(document.getElementById('oddsN').value);
-            const o2 = parseFloat(document.getElementById('odds2').value);
+    function selectionnerMatch() {
+      const index = document.getElementById('listeMatchs').value;
+      if (index === "") return;
 
-            if (!o1 || !oN || !o2 || o1 <= 1 || oN <= 1 || o2 <= 1) {
-                alert("Saisissez des côtes valides.");
-                return;
-            }
+      const match = listeMatchsData[index];
+      if (!match || !match.bookmakers || match.bookmakers.length === 0) {
+        alert("Aucune cote trouvée pour ce match.");
+        return;
+      }
 
-            // 1. Calcul de la Marge du Bookmaker (Overround)
-            const impl1 = 1 / o1;
-            const implN = 1 / oN;
-            const impl2 = 1 / o2;
-            const totalImpl = impl1 + implN + impl2;
-            const margin = (totalImpl - 1) * 100;
+      const bookmaker = match.bookmakers[0];
+      const market = bookmaker.markets.find(m => m.key === 'h2h');
+      if (!market) return;
 
-            // 2. Paramètres contextuels
-            const xgA = parseFloat(document.getElementById('xgA').value);
-            const xgB = parseFloat(document.getElementById('xgB').value);
-            const restA = parseFloat(document.getElementById('restA').value);
-            const restB = parseFloat(document.getElementById('restB').value);
-            const abs = parseFloat(document.getElementById('absences').value);
-            const bias = parseFloat(document.getElementById('biasInput').value) / 100;
-            const bankroll = parseFloat(document.getElementById('bankroll').value);
-            const target = document.getElementById('betTarget').value;
+      const homeOutcome = market.outcomes.find(o => o.name === match.home_team);
+      const awayOutcome = market.outcomes.find(o => o.name === match.away_team);
+      const drawOutcome = market.outcomes.find(o => o.name === 'Draw');
 
-            // Lambdas ajustés pour Poisson
-            let lambdaA = Math.max(0.2, (xgA * restA) + abs);
-            let lambdaB = Math.max(0.2, (xgB * restB) - abs);
+      document.getElementById('equipeA').value = match.home_team;
+      document.getElementById('equipeB').value = match.away_team;
+      if (homeOutcome) document.getElementById('cote1').value = homeOutcome.price;
+      if (drawOutcome) document.getElementById('coteN').value = drawOutcome.price;
+      if (awayOutcome) document.getElementById('cote2').value = awayOutcome.price;
+    }
 
-            // 3. Simulation Monte-Carlo (1000 matchs)
-            let winA = 0, draw = 0, winB = 0;
-            const runs = 1000;
+    function actualiserIndicateurBiais(valeur) {
+      const el = document.getElementById('valeurBiais');
+      if(valeur == 0) el.innerText = "Neutre (0%)";
+      else el.innerText = `Biais subjectif : +${valeur}%`;
+    }
 
-            for (let i = 0; i < runs; i++) {
-                // Générer buts selon Poisson
-                let goalsA = 0, goalsB = 0;
-                
-                // Tirage buts A
-                let pA = Math.random(), cumulativeA = 0;
-                for (let g = 0; g < 8; g++) {
-                    cumulativeA += poisson(g, lambdaA);
-                    if (pA <= cumulativeA) { goalsA = g; break; }
-                }
+    // --- ALGORITHME MATHÉMATIQUE (POISSON + MONTE CARLO + KELLY) ---
+    function poissonRandom(lambda) {
+      let L = Math.exp(-lambda);
+      let k = 0;
+      let p = 1;
+      do {
+        k++;
+        p *= Math.random();
+      } while (p > L);
+      return k - 1;
+    }
 
-                // Tirage buts B
-                let pB = Math.random(), cumulativeB = 0;
-                for (let g = 0; g < 8; g++) {
-                    cumulativeB += poisson(g, lambdaB);
-                    if (pB <= cumulativeB) { goalsB = g; break; }
-                }
+    function lancerSimulation() {
+      let xgA = parseFloat(document.getElementById('xgA').value) * parseFloat(document.getElementById('reposA').value);
+      let xgB = parseFloat(document.getElementById('xgB').value) * parseFloat(document.getElementById('reposB').value);
+      
+      const abs = document.getElementById('absences').value;
+      if(abs === 'missingA') xgA *= 0.85;
+      if(abs === 'missingB') xgB *= 0.85;
 
-                if (goalsA > goalsB) winA++;
-                else if (goalsA === goalsB) draw++;
-                else winB++;
-            }
+      const c1 = parseFloat(document.getElementById('cote1').value);
+      const cN = parseFloat(document.getElementById('coteN').value);
+      const c2 = parseFloat(document.getElementById('cote2').value);
 
-            let probSimA = winA / runs;
-            let probSimN = draw / runs;
-            let probSimB = winB / runs;
+      // Simulation Monte-Carlo (1 000 tirages)
+      let winA = 0, draw = 0, winB = 0;
+      const runs = 1000;
 
-            // Sélection de la cible choisie par l'utilisateur
-            let selectedProbSim = probSimA;
-            let selectedBookieProb = impl1 / totalImpl;
-            let selectedOdds = o1;
+      for (let i = 0; i < runs; i++) {
+        let goalsA = poissonRandom(xgA);
+        let goalsB = poissonRandom(xgB);
+        if (goalsA > goalsB) winA++;
+        else if (goalsA === goalsB) draw++;
+        else winB++;
+      }
 
-            if (target === "N") {
-                selectedProbSim = probSimN;
-                selectedBookieProb = implN / totalImpl;
-                selectedOdds = oN;
-            } else if (target === "2") {
-                selectedProbSim = probSimB;
-                selectedBookieProb = impl2 / totalImpl;
-                selectedOdds = o2;
-            }
+      const pRealA = winA / runs;
+      const pRealN = draw / runs;
+      const pRealB = winB / runs;
 
-            // 4. Pénalité du Biais Cognitif
-            // Si le parieur surestime sa confiance, on réduit la probabilité réelle estimée pour se protéger.
-            const adjustedProb = Math.max(0.02, selectedProbSim - (bias * 0.12));
+      const choix = document.getElementById('choixPari').value;
+      let pReal = pRealA;
+      let cote = c1;
 
-            // 5. Calcul de l'Expected Value (EV)
-            const ev = (adjustedProb * selectedOdds) - 1;
-            const evPercent = (ev * 100).toFixed(2);
+      if (choix === 'N') { pReal = pRealN; cote = cN; }
+      else if (choix === '2') { pReal = pRealB; cote = c2; }
 
-            // 6. Critère de Kelly Fractionné (Safety 1/4 Kelly avec Cap à 4% max)
-            let kellyFraction = 0;
-            if (ev > 0) {
-                const b = selectedOdds - 1;
-                const fullKelly = (adjustedProb * b - (1 - adjustedProb)) / b;
-                kellyFraction = Math.max(0, fullKelly * 0.25); // 1/4 Kelly
-                if (kellyFraction > 0.04) kellyFraction = 0.04; // Bouclier Anti-Ruine Max 4%
-            }
+      const pBook = 1 / cote;
+      
+      // Ajustement anti-biais
+      const biais = parseFloat(document.getElementById('curseurAffinite').value) / 100;
+      const pRealAjustee = pReal * (1 - (biais * 0.2)); 
 
-            const recommendedStakeFCFA = Math.round(bankroll * kellyFraction);
+      // Calcul EV
+      const ev = (pRealAjustee * cote) - 1;
+      const evPourcent = (ev * 100).toFixed(1);
 
-            // AFFICHAGE DES RÉSULTATS
-            document.getElementById('resultsDashboard').classList.remove('hidden');
-            document.getElementById('resMargin').innerText = margin.toFixed(1) + "%";
-            document.getElementById('resEV').innerText = (ev > 0 ? "+" : "") + evPercent + "%";
-            document.getElementById('resProbReal').innerText = (adjustedProb * 100).toFixed(1) + "%";
+      // Critère de Kelly (Fractionnaire 25% + Plafond 4%)
+      const b = cote - 1;
+      let kelly = ((pRealAjustee * b) - (1 - pRealAjustee)) / b;
+      kelly = kelly * 0.25; // Kelly prudent
+      if (kelly < 0) kelly = 0;
+      if (kelly > 0.04) kelly = 0.04; // Plafond 4% max
 
-            document.getElementById('resProbBookie').innerText = (selectedBookieProb * 100).toFixed(1) + "%";
-            document.getElementById('resProbMonte').innerText = (adjustedProb * 100).toFixed(1) + "%";
+      const capital = parseFloat(document.getElementById('capital').value);
+      const mise = Math.round(capital * kelly);
 
-            document.getElementById('barBookie').style.width = (selectedBookieProb * 100) + "%";
-            document.getElementById('barMonte').style.width = (adjustedProb * 100) + "%";
+      // Affichage
+      document.getElementById('zoneResultats').classList.remove('hidden');
+      document.getElementById('probBookmaker').innerText = (pBook * 100).toFixed(1) + '%';
+      document.getElementById('barreBookmaker').style.width = (pBook * 100) + '%';
+      document.getElementById('probReelle').innerText = (pRealAjustee * 100).toFixed(1) + '%';
+      document.getElementById('barreReelle').style.width = (pRealAjustee * 100) + '%';
 
-            // Rendu de la décision
-            const decCard = document.getElementById('decisionCard');
-            const decIcon = document.getElementById('decisionIcon');
-            const decTitle = document.getElementById('decisionTitle');
-            const decText = document.getElementById('decisionText');
-            const decStake = document.getElementById('stakeRecommendation');
+      const badgeEV = document.getElementById('badgeEV');
+      if (ev > 0) {
+        badgeEV.innerText = `EV: +${evPourcent}% (Value)`;
+        badgeEV.className = "text-xs px-2.5 py-1 rounded-full font-bold font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+      } else {
+        badgeEV.innerText = `EV: ${evPourcent}% (Pas de Value)`;
+        badgeEV.className = "text-xs px-2.5 py-1 rounded-full font-bold font-mono bg-rose-500/20 text-rose-400 border border-rose-500/30";
+      }
 
-            if (ev > 0.02) {
-                decCard.className = "p-4 rounded-xl border bg-emerald-950/60 border-emerald-500/50 text-emerald-100";
-                decIcon.className = "fa-solid fa-circle-check text-emerald-400 text-2xl";
-                decTitle.innerText = "VALUE BET DÉTECTÉ (Opportunité Rentable)";
-                decText.innerText = "L'analyse Monte-Carlo et le modèle de Poisson indiquent que le bookmaker a sous-estimé cette éventualité.";
-                decStake.innerText = `💡 MISE CONSEILLÉE : ${(kellyFraction * 100).toFixed(1)}% du capital soit ${recommendedStakeFCFA.toLocaleString()} FCFA/$.`;
-            } else if (ev < -0.04) {
-                decCard.className = "p-4 rounded-xl border bg-rose-950/60 border-rose-500/50 text-rose-100";
-                decIcon.className = "fa-solid fa-triangle-exclamation text-rose-400 text-2xl";
-                decTitle.innerText = "PARI NON RENTABLE (Espérance Négative)";
-                decText.innerText = "La côte offerte est insuffisante par rapport aux risques réels (fatigue, absences ou marge bookmaker élevée).";
-                decStake.innerText = "⛔ CONSEIL : NE PAS MISER (Mise conseillée : 0 FCFA).";
-            } else {
-                decCard.className = "p-4 rounded-xl border bg-amber-950/60 border-amb
+      document.getElementById('montantMise').innerText = mise.toLocaleString('fr-FR') + ' FCFA';
+      document.getElementById('pourcentageMise').innerText = (kelly * 100).toFixed(1) + '%';
+    }
+  </script>
+</body>
+            </html>
+            
