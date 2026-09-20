@@ -3,103 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviator Vision AI v3.5 - Spribe OCR & Matrix</title>
+  <title>Aviator Vision AI v4.0 - Real-Time Quant Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12 font-sans">
 
-  <!-- Navbar -->
-  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+  <!-- BANNIÈRE DYNAMIQUE DE HAUT D'ÉCRAN (Change de couleur selon la zone) -->
+  <header id="topDynamicHeader" class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
-          <i class="fa-solid fa-eye text-white text-xl"></i>
+        <div id="headerIconBg" class="w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300 shadow-md transition-all duration-500">
+          <i id="headerIcon" class="fa-solid fa-shield-halved"></i>
         </div>
         <div>
-          <h1 class="font-bold text-lg leading-tight tracking-wide text-white">Aviator Vision AI</h1>
-          <p class="text-xs text-slate-400">Scanner Spribe & Matrix</p>
+          <h1 id="headerTitre" class="font-bold text-base leading-tight tracking-wide text-white">Zone En Attente</h1>
+          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Activez la caméra pour démarrer l'analyse</p>
         </div>
       </div>
-      <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono font-medium">v3.5 Spribe</span>
+      <div class="text-right">
+        <span id="badgeZScoreHeader" class="text-xs font-mono font-bold bg-black/40 px-2.5 py-1 rounded-full border border-white/20 block mb-1">Z: 0.00</span>
+        <span class="text-[10px] text-slate-300 uppercase tracking-wider font-mono">Cible: ≥ 2.00x</span>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
+  <main class="max-w-2xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- MATRICE DE RISQUE TRIPLE ZONE -->
-    <div id="cardZoneRisque" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-3 transition-all duration-300">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Matrice de Risque Spribe</span>
-        <span id="badgeLoiNormale" class="text-[10px] bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded-full font-mono">Z-Score: 0.00</span>
-      </div>
-
-      <div class="flex items-center gap-4 py-2">
-        <div id="iconZone" class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl transition-all duration-300 shadow-lg">
-          <i class="fa-solid fa-shield-halved text-slate-400"></i>
-        </div>
-        <div class="flex-1">
-          <h2 id="titreZone" class="text-lg font-bold text-white">Initialisation Moteur...</h2>
-          <p id="descZone" class="text-xs text-slate-400 mt-0.5">Scannez la grille « Historique de la Manche » pour démarrer.</p>
-        </div>
-      </div>
-
-      <div class="space-y-1 pt-2 border-t border-slate-800/80">
-        <div class="flex justify-between text-xs font-mono">
-          <span class="text-slate-400">Indice de Volatilité (σ) :</span>
-          <span id="valeurVolatilite" class="text-amber-400 font-bold">0.00</span>
-        </div>
-        <div class="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
-          <div id="barreVolatilite" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 1. CAPTURE CAMÉRA SPRIBE OCR -->
+    <!-- 1. FLUX CAMÉRA TEMPS RÉEL (SECTION PRINCIPALE PRIORITAIRE) -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-camera text-rose-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra Spribe</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra Temps Réel</h2>
         </div>
-        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
           <i class="fa-solid fa-video"></i> Activer Caméra
         </button>
       </div>
 
-      <!-- Viseur Caméra -->
-      <div class="relative w-full h-60 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+      <!-- Viseur Caméra & Overlay OCR -->
+      <div class="relative w-full h-64 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
         <video id="videoFeed" autoplay playsinline class="w-full h-full object-cover hidden"></video>
         <canvas id="ocrCanvas" class="hidden"></canvas>
 
-        <div id="camPlaceholder" class="text-center p-4">
-          <i class="fa-solid fa-qrcode text-4xl text-slate-600 mb-2"></i>
-          <p class="text-xs text-slate-500">Ouvrez le panneau « HISTORIQUE DE LA MANCHE » sur Aviator et pointez votre caméra dessus.</p>
+        <div id="camPlaceholder" class="text-center p-5">
+          <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3 animate-pulse"></i>
+          <p class="text-xs text-slate-400 font-medium">Pointez la caméra vers l'historique de la manche Aviator</p>
+          <p class="text-[10px] text-slate-500 mt-1">Spribe Dark Mode • Analyse en temps réel</p>
         </div>
 
-        <!-- Masque de cadrage ajusté pour le modal Historique Spribe -->
-        <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-emerald-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-emerald-500/5">
-          <span class="text-[10px] bg-slate-900/90 text-emerald-300 px-2.5 py-1 rounded border border-emerald-500/40 font-mono">CADRER LA GRILLE HISTORIQUE SPRIBE</span>
-          <div id="ocrStatus" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono font-bold">OCR Chargement...</div>
+        <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
+          <span class="text-[10px] bg-slate-900/90 text-amber-300 px-2.5 py-1 rounded border border-amber-500/40 font-mono font-bold">CADRAGE AUTOMATIQUE SPRIBE</span>
+          <div id="ocrStatus" class="text-[10px] bg-slate-800 text-slate-200 px-2.5 py-1 rounded font-mono font-bold">OCR Chargement...</div>
         </div>
       </div>
 
-      <!-- Commandes de Scan -->
-      <div class="flex gap-2">
-        <button onclick="lancerScanInstantane()" id="btnScanOnce" disabled class="flex-1 bg-amber-600 disabled:bg-slate-800 disabled:text-slate-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
-          <i class="fa-solid fa-bolt"></i> Scan Instantané Grille
+      <!-- Contrôles du Scanner -->
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="lancerScanInstantane()" id="btnScanOnce" disabled class="bg-amber-600 disabled:bg-slate-800 disabled:text-slate-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bolt"></i> Scan Instantané
         </button>
-        <button onclick="toggleAutoScan()" id="btnAutoScan" disabled class="flex-1 bg-slate-800 disabled:bg-slate-800 disabled:text-slate-600 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
+        <button onclick="toggleAutoScan()" id="btnAutoScan" disabled class="bg-slate-800 disabled:bg-slate-800 disabled:text-slate-600 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-rotate"></i> Auto-Scan Continu
         </button>
       </div>
 
-      <!-- Saisie Manuelle -->
+      <!-- Saisie Manuelle de Secours -->
       <div class="space-y-1 pt-2 border-t border-slate-800">
-        <label class="block text-xs text-slate-400">Saisie Manuelle Rapide :</label>
+        <label class="block text-xs text-slate-400">Saisie manuelle rapide :</label>
         <div class="flex gap-2">
-          <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 24.78" onkeypress="if(event.key==='Enter') ajouterMultiplicateurManuel()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
+          <input type="number" step="0.01" id="inputMultiplier" placeholder="ex: 2.15" onkeypress="if(event.key==='Enter') ajouterMultiplicateurManuel()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-rose-500">
           <button onclick="ajouterMultiplicateurManuel()" class="bg-slate-800 hover:bg-slate-700 px-4 rounded-xl font-bold text-xs text-white">
             + Ajouter
           </button>
@@ -107,51 +82,81 @@
       </div>
     </div>
 
-    <!-- 2. ESPACES DE COULEURS & ÉCARTS -->
+    <!-- 2. TABLEAU DE BORD QUANTITATIF (CIBLE ≥ 2.00x) -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
-          <i class="fa-solid fa-layer-group text-purple-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Écarts par Couleur Spribe</h2>
+          <i class="fa-solid fa-chart-line text-cyan-400"></i>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Metrics Cible ≥ 2.00x</h2>
         </div>
-        <span class="text-xs text-slate-400">Capturés : <strong id="countTirages" class="text-white">0</strong></span>
+        <span class="text-xs text-slate-400">Échantillon : <strong id="countTirages" class="text-white">0</strong></span>
       </div>
 
-      <!-- Métriques 4 Couleurs Spribe -->
-      <div class="grid grid-cols-4 gap-1.5 text-center">
+      <!-- Indicateurs Mathematiques Clés -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400 mb-1">Taux Obtenu (≥ 2.00x)</p>
+          <p id="rateTarget" class="text-xl font-bold font-mono text-cyan-400">0.0%</p>
+          <p class="text-[9px] text-slate-500 mt-0.5">Théorique : 48.5%</p>
+        </div>
+
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400 mb-1">Volatilité Log ($\sigma_{\ln}$)</p>
+          <p id="valeurVolatilite" class="text-xl font-bold font-mono text-amber-400">0.00</p>
+          <p id="labelVolatilite" class="text-[9px] text-slate-500 mt-0.5">Régime Neutre</p>
+        </div>
+      </div>
+
+      <!-- Densité de Grappes & Kelly -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400 mb-1">Densité Grappe Crash</p>
+          <p id="clusterDensity" class="text-lg font-bold font-mono text-rose-400">0 consécutifs</p>
+          <p class="text-[9px] text-slate-500 mt-0.5">Suite tirages &lt; 2.00x</p>
+        </div>
+
+        <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
+          <p class="text-[10px] text-slate-400 mb-1">Conseil Kelly (Cible 2.0x)</p>
+          <p id="kellyAdvice" class="text-lg font-bold font-mono text-emerald-400">0.0%</p>
+          <p class="text-[9px] text-slate-500 mt-0.5">Du capital max</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ÉCARTS DE COULEURS SPRIBE -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Écarts depuis le dernier tirage :</h2>
+      <div class="grid grid-cols-4 gap-2 text-center">
         <div class="p-2 bg-blue-500/10 border border-blue-500/20 rounded-xl">
           <p class="text-[9px] text-blue-300 font-bold uppercase">Bleu (&lt;2x)</p>
           <p id="gapBlue" class="text-base font-bold font-mono text-blue-400 mt-1">0 tour</p>
         </div>
-
         <div class="p-2 bg-purple-500/10 border border-purple-500/20 rounded-xl">
           <p class="text-[9px] text-purple-300 font-bold uppercase">Violet (2-9.9x)</p>
           <p id="gapPurple" class="text-base font-bold font-mono text-purple-400 mt-1">0 tour</p>
         </div>
-
         <div class="p-2 bg-pink-500/10 border border-pink-500/20 rounded-xl">
           <p class="text-[9px] text-pink-300 font-bold uppercase">Rose (10-99x)</p>
           <p id="gapPink" class="text-base font-bold font-mono text-pink-400 mt-1">0 tour</p>
         </div>
-
         <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
           <p class="text-[9px] text-emerald-300 font-bold uppercase">Vert (100x+)</p>
           <p id="gapGreen" class="text-base font-bold font-mono text-emerald-400 mt-1">0 tour</p>
         </div>
       </div>
 
-      <!-- Badges historisés -->
-      <div id="historiqueBadges" class="flex flex-wrap gap-2 min-h-[42px] p-2.5 bg-slate-950 rounded-xl border border-slate-800 items-center">
+      <!-- Séquence enregistrée -->
+      <div id="historiqueBadges" class="flex flex-wrap gap-2 min-h-[42px] p-2.5 bg-slate-950 rounded-xl border border-slate-800 items-center mt-3">
         <span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>
       </div>
     </div>
 
-    <!-- 3. MOTIFS IDENTIQUES & MEMOIRE SESSIONS -->
+    <!-- 4. MÉMOIRE DE SESSIONS ET PATTERNS -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-floppy-disk text-emerald-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Motifs & Sauvegarde</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Archives & Sauvegarde</h2>
         </div>
         <span id="savedCount" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">0 sessions</span>
       </div>
@@ -204,7 +209,7 @@
 
     initOCRWorker();
 
-    // --- CAMERA ---
+    // --- CAMÉRA EN TEMPS RÉEL UNIVERSELLE ---
     async function toggleCamera() {
       const video = document.getElementById('videoFeed');
       const placeholder = document.getElementById('camPlaceholder');
@@ -225,23 +230,29 @@
         btnAuto.disabled = true;
       } else {
         try {
-          streamCamera = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } 
+          streamCamera = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: "environment" } }
           });
-          video.srcObject = streamCamera;
-          video.classList.remove('hidden');
-          overlay.classList.remove('hidden');
-          placeholder.classList.add('hidden');
-          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper';
-          btnScanOnce.disabled = false;
-          btnAuto.disabled = false;
-        } catch (err) {
-          alert("Erreur d'accès à la caméra du téléphone.");
+        } catch (e1) {
+          try {
+            streamCamera = await navigator.mediaDevices.getUserMedia({ video: true });
+          } catch (e2) {
+            alert("Erreur d'accès à la caméra du téléphone.");
+            return;
+          }
         }
+
+        video.srcObject = streamCamera;
+        video.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Caméra';
+        btnScanOnce.disabled = false;
+        btnAuto.disabled = false;
       }
     }
 
-    // --- TRAITEMENT ET LECTURE OPTIMISÉE POUR SPRIBE DARK MODE ---
+    // --- TRAITEMENT OCR FLUX VIDÉO ---
     async function capturerEtAnalyserFrame() {
       if (!streamCamera || !ocrWorker || isProcessingFrame) return;
 
@@ -254,24 +265,23 @@
       const canvas = document.getElementById('ocrCanvas');
       const ctx = canvas.getContext('2d');
 
-      const cropX = video.videoWidth * 0.05;
-      const cropY = video.videoHeight * 0.10;
-      const cropW = video.videoWidth * 0.90;
-      const cropH = video.videoHeight * 0.55;
+      const srcW = video.videoWidth;
+      const srcH = video.videoHeight;
 
-      canvas.width = cropW;
-      canvas.height = cropH;
+      if (!srcW || !srcH) {
+        isProcessingFrame = false;
+        return;
+      }
 
-      ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+      canvas.width = srcW;
+      canvas.height = srcH;
+      ctx.drawImage(video, 0, 0, srcW, srcH);
 
-      // Traitement spécifique au fond sombre de l'Historique Spribe (#18181c)
-      let imgData = ctx.getImageData(0, 0, cropW, cropH);
+      let imgData = ctx.getImageData(0, 0, srcW, srcH);
       let d = imgData.data;
       for (let i = 0; i < d.length; i += 4) {
-        let r = d[i], g = d[i+1], b = d[i+2];
-        let maxColor = Math.max(r, g, b);
-        // Isoler les textes lumineux (bleu, violet, rose, vert, blanc) du fond sombre
-        let v = (maxColor > 90) ? 255 : 0;
+        let maxColor = Math.max(d[i], d[i+1], d[i+2]);
+        let v = (maxColor > 85) ? 255 : 0;
         d[i] = v; d[i + 1] = v; d[i + 2] = v;
       }
       ctx.putImageData(imgData, 0, 0);
@@ -284,8 +294,8 @@
           let recs = matches.map(parseFloat).filter(v => v >= 1.0 && v <= 10000.0);
           let ajouts = 0;
           recs.forEach(v => {
-            if (!sequence.includes(v)) { // Éviter les doublons lors du scan d'une grille complète
-              sequence.push(v);
+            if (!sequence.includes(v)) {
+              sequence.unshift(v);
               ajouts++;
             }
           });
@@ -315,15 +325,15 @@
         clearInterval(autoScanInterval);
         autoScanInterval = null;
         btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Auto-Scan Continu';
-        btn.className = "flex-1 bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
+        btn.className = "bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
       } else {
         autoScanInterval = setInterval(capturerEtAnalyserFrame, 1800);
         btn.innerHTML = '<i class="fa-solid fa-stop"></i> Arrêter Auto-Scan';
-        btn.className = "flex-1 bg-rose-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
+        btn.className = "bg-rose-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
       }
     }
 
-    // --- MANUEL & CALCULS ---
+    // --- SAISIE MANUELLE ---
     function ajouterMultiplicateurManuel() {
       const input = document.getElementById('inputMultiplier');
       const val = parseFloat(input.value);
@@ -365,43 +375,35 @@
       document.getElementById('gapGreen').innerText = gapG === -1 ? `${sequence.length}+` : `${gapG} tour${gapG > 1 ? 's' : ''}`;
     }
 
-    function analyserMatriceRisque() {
-      const card = document.getElementById('cardZoneRisque');
-      const icon = document.getElementById('iconZone');
-      const titre = document.getElementById('titreZone');
-      const desc = document.getElementById('descZone');
-      const badgeZ = document.getElementById('badgeLoiNormale');
-      const valVol = document.getElementById('valeurVolatilite');
-      const barVol = document.getElementById('barreVolatilite');
+    // --- ANALYSE DE LA BANNIÈRE DE HAUT D'ÉCRAN ET DES 3 ZONES ---
+    function analyserMatriceRisqueEtHeader() {
+      const topHeader = document.getElementById('topDynamicHeader');
+      const iconBg = document.getElementById('headerIconBg');
+      const icon = document.getElementById('headerIcon');
+      const titre = document.getElementById('headerTitre');
+      const sousTitre = document.getElementById('headerSousTitre');
+      const badgeZ = document.getElementById('badgeZScoreHeader');
 
       if (sequence.length < 4) {
-        titre.innerText = "Saisissez/Scannez des données";
-        desc.innerText = "Scannez la grille 'Historique de la Manche' pour calculer le risque.";
-        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-3";
-        icon.className = "w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl text-slate-400";
-        icon.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
-        valVol.innerText = "0.00";
-        barVol.style.width = "0%";
-        badgeZ.innerText = "Z-Score: 0.00";
+        topHeader.className = "bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl";
+        iconBg.className = "w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300";
+        icon.className = "fa-solid fa-shield-halved";
+        titre.innerText = "Séquence En Attente";
+        sousTitre.innerText = "Saisissez ou scannez au moins 4 tirages";
+        badgeZ.innerText = "Z: 0.00";
+        document.getElementById('rateTarget').innerText = "0.0%";
+        document.getElementById('valeurVolatilite').innerText = "0.00";
+        document.getElementById('clusterDensity').innerText = "0 consécutifs";
+        document.getElementById('kellyAdvice').innerText = "0.0%";
         return;
       }
 
+      // 1. Taux Cible >= 2.00x
+      const targetMatches = sequence.filter(v => v >= 2.0).length;
+      const rateTargetVal = (targetMatches / sequence.length) * 100;
+      document.getElementById('rateTarget').innerText = rateTargetVal.toFixed(1) + "%";
+
+      // 2. Volatilité Logarithmique
       const logVals = sequence.map(v => Math.log(v));
       const mean = logVals.reduce((a, b) => a + b, 0) / logVals.length;
-      const variance = logVals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / logVals.length;
-      const stdDev = Math.sqrt(variance);
-
-      valVol.innerText = stdDev.toFixed(2);
-      barVol.style.width = Math.min(100, stdDev * 80) + "%";
-
-      const recent4 = sequence.slice(0, 4);
-      const countBlues = recent4.filter(v => v < 2.0).length;
-      const zScore = ((countBlues / 4) - 0.515) / Math.sqrt((0.515 * 0.485) / 4);
-      badgeZ.innerText = `Z-Score: ${zScore > 0 ? '+' : ''}${zScore.toFixed(2)}`;
-
-      if (countBlues >= 3 || stdDev > 1.2) {
-        card.className = "bg-rose-950/40 border border-rose-500/40 rounded-2xl p-5 shadow-2xl space-y-3";
-        icon.className = "w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-2xl shadow-lg";
-        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-        titre.innerText = "🔴 ZONE À RISQUE ÉLEVÉ";
-        desc.innerText = "Accumulation de crashes (<2.0x) ou forte instabilité. Évitez d'eng
+      const variance = logVals.reduce((a, b) => a + Math.p
