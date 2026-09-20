@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviator Vision AI v4.0 - Real-Time Quant Engine</title>
+  <title>Aviator Vision AI v4.1 - Real-Time Quant Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -31,27 +31,35 @@
 
   <main class="max-w-2xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. FLUX CAMÉRA TEMPS RÉEL -->
+    <!-- 1. SCANNER CAMÉRA TEMPS RÉEL + CAPTURE PHOTO -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between flex-wrap gap-2">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-camera text-rose-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra Temps Réel</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra / Photo</h2>
         </div>
-        <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
-          <i class="fa-solid fa-video"></i> Activer Caméra
-        </button>
+        <div class="flex gap-2">
+          <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
+            <i class="fa-solid fa-video"></i> Activer Flux
+          </button>
+          <label class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-2 rounded-xl transition-all shadow-lg shadow-amber-600/20 flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-camera-retro"></i> Photo
+            <input type="file" accept="image/*" capture="environment" onchange="analyserPhotoImportee(event)" class="hidden">
+          </label>
+        </div>
       </div>
 
-      <!-- Viseur Caméra avec autostart mobile forcé -->
+      <!-- Viseur Caméra & Overlay OCR -->
       <div class="relative w-full h-64 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
         <video id="videoFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
         <canvas id="ocrCanvas" class="hidden"></canvas>
 
-        <div id="camPlaceholder" class="text-center p-5">
-          <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3 animate-pulse"></i>
+        <div id="camPlaceholder" class="text-center p-5 space-y-2">
+          <i class="fa-solid fa-expand text-4xl text-slate-600 animate-pulse block"></i>
           <p class="text-xs text-slate-400 font-medium">Pointez la caméra vers l'historique de la manche Aviator</p>
-          <p class="text-[10px] text-slate-500 mt-1">Spribe Dark Mode • Analyse en temps réel</p>
+          <p id="camDebugStatus" class="text-[11px] text-amber-400 font-mono bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/20 inline-block">
+            Système prêt
+          </p>
         </div>
 
         <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
@@ -206,7 +214,7 @@
 
     initOCRWorker();
 
-    // --- CAMÉRA TEMPS RÉEL OPTIMISÉE POUR ANDROID ---
+    // --- CAMÉRA TEMPS RÉEL + GESTION ERREUR ---
     async function toggleCamera() {
       const video = document.getElementById('videoFeed');
       const placeholder = document.getElementById('camPlaceholder');
@@ -214,6 +222,7 @@
       const btn = document.getElementById('btnCam');
       const btnScanOnce = document.getElementById('btnScanOnce');
       const btnAuto = document.getElementById('btnAutoScan');
+      const debugStatus = document.getElementById('camDebugStatus');
 
       if (streamCamera) {
         if (autoScanInterval) clearInterval(autoScanInterval);
@@ -222,37 +231,98 @@
         video.classList.add('hidden');
         overlay.classList.add('hidden');
         placeholder.classList.remove('hidden');
-        btn.innerHTML = '<i class="fa-solid fa-video"></i> Activer Caméra';
+        btn.innerHTML = '<i class="fa-solid fa-video"></i> Activer Flux';
         btnScanOnce.disabled = true;
         btnAuto.disabled = true;
+        debugStatus.innerText = "Caméra arrêtée";
       } else {
-        try {
-          // Essai 1: Caméra arrière idéale
-          streamCamera = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: "environment" } }
-          });
-        } catch (e1) {
+        debugStatus.innerText = "Démarrage caméra...";
+
+        const constraintsList = [
+          { video: { facingMode: { ideal: "environment" } } },
+          { video: { facingMode: "environment" } },
+          { video: true }
+        ];
+
+        streamCamera = null;
+        let lastError = null;
+
+        for (let c of constraintsList) {
           try {
-            // Essai 2: Mode vidéo simple
-            streamCamera = await navigator.mediaDevices.getUserMedia({ video: true });
-          } catch (e2) {
-            alert("Erreur Caméra (" + e2.name + ") : " + e2.message + "\n\nAssurez-vous d'ouvrir la page directement dans Google Chrome et d'autoriser l'accès à la caméra.");
-            return;
+            streamCamera = await navigator.mediaDevices.getUserMedia(c);
+            if (streamCamera) break;
+          } catch (err) {
+            lastError = err;
           }
         }
 
-        video.srcObject = streamCamera;
-        video.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-        placeholder.classList.add('hidden');
-        
-        // Force la lecture vidéo sur mobile
-        video.play().catch(err => console.log("Play auto:", err));
+        if (!streamCamera) {
+          const errName = lastError ? (lastError.name || lastError.message) : 'Inconnu';
+          debugStatus.innerText = "Erreur Android: " + errName;
+          alert("L'accès flux vidéo est bloqué par Android (" + errName + ").\n\nUtilisez le bouton 'Photo' juste à côté pour capturer la grille de jeu directement !");
+          return;
+        }
 
-        btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Caméra';
-        btnScanOnce.disabled = false;
-        btnAuto.disabled = false;
+        video.srcObject = streamCamera;
+        video.setAttribute("playsinline", true);
+        video.setAttribute("autoplay", true);
+        video.setAttribute("muted", true);
+
+        try {
+          await video.play();
+          video.classList.remove('hidden');
+          overlay.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+          btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Flux';
+          btnScanOnce.disabled = false;
+          btnAuto.disabled = false;
+          debugStatus.innerText = "Caméra active";
+        } catch (playErr) {
+          debugStatus.innerText = "Erreur lecture: " + playErr.message;
+        }
       }
+    }
+
+    // --- CAPTURE PHOTO ALTERNATIVE (100% FONCTIONNELLE SUR TOUS LES PHONES) ---
+    async function analyserPhotoImportee(event) {
+      const file = event.target.files[0];
+      if (!file || !ocrWorker) return;
+
+      const debugStatus = document.getElementById('camDebugStatus');
+      debugStatus.innerText = "Analyse photo en cours...";
+
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = async () => {
+        const canvas = document.getElementById('ocrCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        try {
+          const result = await ocrWorker.recognize(canvas);
+          const matches = result.data.text.match(/\b\d{1,4}\.\d{1,2}\b/g);
+
+          if (matches && matches.length > 0) {
+            let recs = matches.map(parseFloat).filter(v => v >= 1.0 && v <= 10000.0);
+            let ajouts = 0;
+            recs.forEach(v => {
+              if (!sequence.includes(v)) {
+                sequence.unshift(v);
+                ajouts++;
+              }
+            });
+            actualiserToutesLesAnalyses();
+            debugStatus.innerText = `${recs.length} multiplicateur(s) extrait(s)`;
+          } else {
+            debugStatus.innerText = "Aucune valeur détectée sur la photo";
+            alert("Aucun chiffre trouvé sur la photo. Assurez-vous que l'historique Aviator est bien net.");
+          }
+        } catch (e) {
+          debugStatus.innerText = "Erreur lecture photo";
+        }
+      };
     }
 
     // --- TRAITEMENT OCR FLUX VIDÉO ---
@@ -351,59 +421,4 @@
       actualiserToutesLesAnalyses();
     }
 
-    function effacerSessionActuelle() {
-      if (sequence.length === 0) return;
-      if (confirm("Réinitialiser les tirages actuels ?")) {
-        sequence = [];
-        actualiserToutesLesAnalyses();
-      }
-    }
-
-    function getColorType(val) {
-      if (val < 2.0) return 'blue';
-      if (val < 10.0) return 'purple';
-      if (val < 100.0) return 'pink';
-      return 'green';
-    }
-
-    function calculerEcartsCouleurs() {
-      let gapB = sequence.findIndex(v => v < 2.0);
-      let gapP = sequence.findIndex(v => v >= 2.0 && v < 10.0);
-      let gapPk = sequence.findIndex(v => v >= 10.0 && v < 100.0);
-      let gapG = sequence.findIndex(v => v >= 100.0);
-
-      document.getElementById('gapBlue').innerText = gapB === -1 ? `${sequence.length}+` : `${gapB} tour${gapB > 1 ? 's' : ''}`;
-      document.getElementById('gapPurple').innerText = gapP === -1 ? `${sequence.length}+` : `${gapP} tour${gapP > 1 ? 's' : ''}`;
-      document.getElementById('gapPink').innerText = gapPk === -1 ? `${sequence.length}+` : `${gapPk} tour${gapPk > 1 ? 's' : ''}`;
-      document.getElementById('gapGreen').innerText = gapG === -1 ? `${sequence.length}+` : `${gapG} tour${gapG > 1 ? 's' : ''}`;
-    }
-
-    // --- ANALYSE DE LA BANNIÈRE ET DES ZONES ---
-    function analyserMatriceRisqueEtHeader() {
-      const topHeader = document.getElementById('topDynamicHeader');
-      const iconBg = document.getElementById('headerIconBg');
-      const icon = document.getElementById('headerIcon');
-      const titre = document.getElementById('headerTitre');
-      const sousTitre = document.getElementById('headerSousTitre');
-      const badgeZ = document.getElementById('badgeZScoreHeader');
-
-      if (sequence.length < 4) {
-        topHeader.className = "bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl";
-        iconBg.className = "w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300";
-        icon.className = "fa-solid fa-shield-halved";
-        titre.innerText = "Séquence En Attente";
-        sousTitre.innerText = "Saisissez ou scannez au moins 4 tirages";
-        badgeZ.innerText = "Z: 0.00";
-        document.getElementById('rateTarget').innerText = "0.0%";
-        document.getElementById('valeurVolatilite').innerText = "0.00";
-        document.getElementById('clusterDensity').innerText = "0 consécutifs";
-        document.getElementById('kellyAdvice').innerText = "0.0%";
-        return;
-      }
-
-      const targetMatches = sequence.filter(v => v >= 2.0).length;
-      const rateTargetVal = (targetMatches / sequence.length) * 100;
-      document.getElementById('rateTarget').innerText = rateTargetVal.toFixed(1) + "%";
-
-      const logVals = sequence.map(v => Math.log(v));
-      const mean = logVals.reduce((a, b) => a + b, 0) / logV
+    function effacerSessionActuelle()
