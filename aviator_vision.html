@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviator Vision AI v4.2 - Core Quant Engine</title>
+  <title>Aviator Vision AI v5.0 - Correlated Probability Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12 font-sans">
 
-  <!-- BANNIÈRE DYNAMIQUE DE HAUT D'ÉCRAN -->
   <header id="topDynamicHeader" class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -19,39 +18,62 @@
         </div>
         <div>
           <h1 id="headerTitre" class="font-bold text-base leading-tight tracking-wide text-white">Zone En Attente</h1>
-          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Saisissez ou scannez vos tirages</p>
+          <p id="headerSousTitre" class="text-xs text-slate-300 opacity-90">Analyse de tendance en cours</p>
         </div>
       </div>
       <div class="text-right">
-        <span id="badgeZScoreHeader" class="text-xs font-mono font-bold bg-black/40 px-2.5 py-1 rounded-full border border-white/20 block mb-1">Z: 0.00</span>
-        <span class="text-[10px] text-slate-300 uppercase tracking-wider font-mono">Cible: ≥ 2.00x</span>
+        <span id="probBadgeHeader" class="text-sm font-mono font-extrabold bg-black/50 px-3 py-1 rounded-full border border-cyan-400 text-cyan-300 block mb-1 shadow-lg">--- %</span>
+        <span class="text-[10px] text-slate-300 uppercase tracking-wider font-mono block">Prochain Tour ≥ 2.00x</span>
       </div>
     </div>
   </header>
 
   <main class="max-w-2xl mx-auto px-4 mt-5 space-y-5">
 
-    <!-- 1. SCANNER CAMÉRA PROTOTYPE + SAISIE -->
+    <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-cyan-500/30 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-brain text-cyan-400 animate-pulse"></i>
+          <h2 class="text-xs font-bold text-cyan-300 uppercase tracking-wider">Moteur de Corrélation Predictive</h2>
+        </div>
+        <span id="signalConfidence" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Calcul Ponderé</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center my-3">
+        <p class="text-xs text-slate-400 mb-1">Probabilité estimée du tour suivant (≥ 2.00x) :</p>
+        <div class="flex items-baseline gap-2">
+          <span id="mainProbaValue" class="text-4xl font-extrabold font-mono text-cyan-400 tracking-tight">48.5%</span>
+          <span id="probaTrendIcon" class="text-lg text-slate-500"><i class="fa-solid fa-minus"></i></span>
+        </div>
+
+        <div class="w-full bg-slate-950 h-3.5 rounded-full mt-3 p-0.5 border border-slate-800 overflow-hidden">
+          <div id="probaProgressBar" class="bg-gradient-to-r from-rose-500 via-amber-400 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 48.5%;"></div>
+        </div>
+      </div>
+
+      <div id="decisionBox" class="mt-4 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-center">
+        <p id="decisionText" class="text-xs font-semibold text-slate-300">Saisissez vos premiers tirages pour initialiser l'algorithme prédictif.</p>
+      </div>
+    </div>
+
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-camera text-rose-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">1. Scanner Caméra Temps Réel</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Capture & Saisie</h2>
         </div>
         <button onclick="toggleCamera()" id="btnCam" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3.5 py-2 rounded-xl transition-all shadow-lg shadow-rose-600/20 flex items-center gap-1.5">
           <i class="fa-solid fa-video"></i> Activer Caméra
         </button>
       </div>
 
-      <!-- Viseur Caméra Direct -->
-      <div class="relative w-full h-64 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+      <div class="relative w-full h-56 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
         <video id="videoFeed" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
         <canvas id="ocrCanvas" class="hidden"></canvas>
 
         <div id="camPlaceholder" class="text-center p-5">
           <i class="fa-solid fa-expand text-4xl text-slate-600 mb-3 animate-pulse"></i>
           <p class="text-xs text-slate-400 font-medium">Pointez la caméra vers l'historique de la manche Aviator</p>
-          <p class="text-[10px] text-slate-500 mt-1">Spribe Dark Mode • Analyse temps réel</p>
         </div>
 
         <div id="camOverlay" class="hidden absolute inset-x-4 inset-y-6 border-2 border-amber-400 rounded-xl pointer-events-none flex flex-col items-center justify-between p-2 bg-amber-500/5">
@@ -60,7 +82,6 @@
         </div>
       </div>
 
-      <!-- Contrôles du Scanner -->
       <div class="grid grid-cols-2 gap-2">
         <button onclick="lancerScanInstantane()" id="btnScanOnce" disabled class="bg-amber-600 disabled:bg-slate-800 disabled:text-slate-600 hover:bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2">
           <i class="fa-solid fa-bolt"></i> Scan Instantané
@@ -70,7 +91,6 @@
         </button>
       </div>
 
-      <!-- Saisie Manuelle de Secours -->
       <div class="space-y-1 pt-2 border-t border-slate-800">
         <label class="block text-xs text-slate-400">Saisie manuelle rapide :</label>
         <div class="flex gap-2">
@@ -82,12 +102,11 @@
       </div>
     </div>
 
-    <!-- 2. TABLEAU DE BORD QUANTITATIF -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-chart-line text-cyan-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Metrics Cible ≥ 2.00x</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Indicateurs Composants</h2>
         </div>
         <span class="text-xs text-slate-400">Échantillon : <strong id="countTirages" class="text-white">0</strong></span>
       </div>
@@ -100,28 +119,27 @@
         </div>
 
         <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Volatilité Log ($\sigma_{\ln}$)</p>
-          <p id="valeurVolatilite" class="text-xl font-bold font-mono text-amber-400">0.00</p>
-          <p id="labelVolatilite" class="text-[9px] text-slate-500 mt-0.5">Régime Neutre</p>
+          <p class="text-[10px] text-slate-400 mb-1">Z-Score (Retour Moyenne)</p>
+          <p id="valeurZScore" class="text-xl font-bold font-mono text-amber-400">0.00</p>
+          <p id="labelZScore" class="text-[9px] text-slate-500 mt-0.5">Distribution Équilibrée</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Densité Grappe Crash</p>
-          <p id="clusterDensity" class="text-lg font-bold font-mono text-rose-400">0 consécutifs</p>
-          <p class="text-[9px] text-slate-500 mt-0.5">Suite tirages &lt; 2.00x</p>
+          <p class="text-[10px] text-slate-400 mb-1">Crashes Consécutifs (&lt;2x)</p>
+          <p id="clusterDensity" class="text-lg font-bold font-mono text-rose-400">0 consécutif</p>
+          <p class="text-[9px] text-slate-500 mt-0.5">Risque de grappe</p>
         </div>
 
         <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800">
-          <p class="text-[10px] text-slate-400 mb-1">Conseil Kelly (Cible 2.0x)</p>
+          <p class="text-[10px] text-slate-400 mb-1">Conseil Kelly (Mise Max)</p>
           <p id="kellyAdvice" class="text-lg font-bold font-mono text-emerald-400">0.0%</p>
-          <p class="text-[9px] text-slate-500 mt-0.5">Du capital max</p>
+          <p class="text-[9px] text-slate-500 mt-0.5">Gestion de capital</p>
         </div>
       </div>
     </div>
 
-    <!-- 3. ÉCARTS DE COULEURS SPRIBE -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
       <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Écarts depuis le dernier tirage :</h2>
       <div class="grid grid-cols-4 gap-2 text-center">
@@ -148,12 +166,11 @@
       </div>
     </div>
 
-    <!-- 4. MÉMOIRE DE SESSIONS ET PATTERNS -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-floppy-disk text-emerald-400"></i>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Archives & Sauvegarde</h2>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Archives & Motifs</h2>
         </div>
         <span id="savedCount" class="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">0 sessions</span>
       </div>
@@ -164,7 +181,7 @@
           <span id="patternTitle" class="font-mono text-purple-400 font-bold">---</span>
         </div>
         <p id="patternMatchResult" class="text-xs text-slate-300 leading-relaxed">
-          Saisissez vos tirages pour analyser les motifs répétitifs.
+          Saisissez vos tirages pour vérifier l'historique des motifs.
         </p>
       </div>
 
@@ -187,20 +204,18 @@
     let autoScanInterval = null;
     let isProcessingFrame = false;
 
-    // --- INITIALISATION OCR ---
+    // INITIALISATION OCR
     async function initOCRWorker() {
       try {
         ocrWorker = await Tesseract.createWorker('eng');
-        await ocrWorker.setParameters({
-          tesseract_char_whitelist: '0123456789.xX',
-        });
+        await ocrWorker.setParameters({ tesseract_char_whitelist: '0123456789.xX' });
       } catch (e) {
-        console.log("Erreur chargement Tesseract OCR", e);
+        console.log("Erreur initialisation OCR", e);
       }
     }
     initOCRWorker();
 
-    // --- ACCÈS CAMÉRA DIRECT ET SIMPLIFIÉ (PROTOTYPE INTIAL) ---
+    // DÉCLENCHEMENT CAMÉRA DIRECT
     async function toggleCamera() {
       const video = document.getElementById('videoFeed');
       const placeholder = document.getElementById('camPlaceholder');
@@ -228,24 +243,21 @@
             video: { facingMode: { ideal: "environment" } },
             audio: false
           });
-
           video.srcObject = streamCamera;
           video.classList.remove('hidden');
           placeholder.classList.add('hidden');
           overlay.classList.remove('hidden');
-          
           btn.innerHTML = '<i class="fa-solid fa-video-slash"></i> Couper Caméra';
           btnScanOnce.disabled = false;
           btnAuto.disabled = false;
-
           await video.play();
         } catch (err) {
-          alert("Erreur Caméra (" + err.name + ") : " + err.message + "\n\nAssurez-vous d'avoir autorisé l'accès dans les paramètres Chrome.");
+          alert("Erreur Caméra : " + err.message);
         }
       }
     }
 
-    // --- SAISIE MANUELLE IMMEDIATE ---
+    // SAISIE MANUELLE
     function ajouterMultiplicateurManuel() {
       const input = document.getElementById('inputMultiplier');
       const val = parseFloat(input.value);
@@ -260,11 +272,79 @@
       actualiserToutesLesAnalyses();
     }
 
-    // --- CALCUL DES INDICATEURS EN TEMPS RÉEL (DÈS 1 TIRAGE) ---
+    // UTILS COULEURS SPRIBE
+    function getColorType(val) {
+      if (val < 2.0) return 'blue';
+      if (val < 10.0) return 'purple';
+      if (val < 100.0) return 'pink';
+      return 'green';
+    }
+
+    // MOTEUR DE CORRÉLATION : PROBABILITÉ EN POURCENTAGE (%)
+    function calculerProbabiliteProchainTour() {
+      if (sequence.length === 0) return 48.5;
+
+      let baseProb = 48.5; // Probabilité théorique fondatrice (Spribe 2.00x)
+
+      // 1. Momentum Récent (Échantillon des 10 derniers)
+      const sample10 = sequence.slice(0, Math.min(sequence.length, 10));
+      const wins10 = sample10.filter(v => v >= 2.0).length;
+      const recentWinRate = (wins10 / sample10.length) * 100;
+      let momentumFactor = (recentWinRate - 48.5) * 0.20;
+
+      // 2. Z-Score (Pression statistique de retour à la moyenne)
+      const bluesCount = sample10.filter(v => v < 2.0).length;
+      const zScoreVal = ((bluesCount / sample10.length) - 0.515) / Math.sqrt((0.515 * 0.485) / sample10.length);
+      // Si Z-Score est élevé (beaucoup de bleus récents), forte probabilité de rebond vers un violet
+      let zScoreBonus = zScoreVal * 7.5;
+
+      // 3. Effet Séries / Crashes Consécutifs
+      let consecutiveBlues = 0;
+      for (let i = 0; i < sequence.length; i++) {
+        if (sequence[i] < 2.0) consecutiveBlues++;
+        else break;
+      }
+
+      let streakBonus = 0;
+      if (consecutiveBlues === 1) streakBonus = 1.5;
+      else if (consecutiveBlues === 2) streakBonus = 6.0;
+      else if (consecutiveBlues >= 3) streakBonus = 14.0; // Pression de sortie de grappe
+
+      // 4. Pattern Matching Historique (Sessions enregistrées)
+      let patternBonus = 0;
+      if (sequence.length >= 3) {
+        const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
+        const history = JSON.parse(localStorage.getItem('aviator_sessions_history') || '[]');
+        let occurrences = 0;
+        let suiviDeuxPlus = 0;
+
+        history.forEach(sess => {
+          const sData = sess.data;
+          for (let i = 0; i < sData.length - 3; i++) {
+            let sub = sData.slice(i, i + 3).map(getColorType).join('-');
+            if (sub === motifActuel) {
+              occurrences++;
+              if (sData[i + 3] >= 2.0) suiviDeuxPlus++;
+            }
+          }
+        });
+
+        if (occurrences >= 2) {
+          let patternWinRate = (suiviDeuxPlus / occurrences) * 100;
+          patternBonus = (patternWinRate - 48.5) * 0.30;
+        }
+      }
+
+      // Synthèse corrélée
+      let probaCalculée = baseProb + momentumFactor + zScoreBonus + streakBonus + patternBonus;
+      return Math.max(8.0, Math.min(92.0, probaCalculée));
+    }
+
+    // MISE À JOUR DE TOUS LES INDICATEURS
     function actualiserToutesLesAnalyses() {
       document.getElementById('countTirages').innerText = sequence.length;
-      
-      // 1. Mise à jour des badges d'historique
+
+      // 1. Badges d'historique
       const container = document.getElementById('historiqueBadges');
       if (sequence.length === 0) {
         container.innerHTML = '<span class="text-xs text-slate-600 italic">Aucune donnée capturée.</span>';
@@ -279,23 +359,6 @@
       }
 
       // 2. Écarts de couleurs
-      calculerEcartsCouleurs();
-
-      // 3. Calculs statistiques & Matrice
-      analyserMatriceRisqueEtHeader();
-
-      // 4. Recherche de patterns
-      analyserMotifsIdentiques();
-    }
-
-    function getColorType(val) {
-      if (val < 2.0) return 'blue';
-      if (val < 10.0) return 'purple';
-      if (val < 100.0) return 'pink';
-      return 'green';
-    }
-
-    function calculerEcartsCouleurs() {
       let gapB = sequence.findIndex(v => v < 2.0);
       let gapP = sequence.findIndex(v => v >= 2.0 && v < 10.0);
       let gapPk = sequence.findIndex(v => v >= 10.0 && v < 100.0);
@@ -305,51 +368,12 @@
       document.getElementById('gapPurple').innerText = gapP === -1 ? `${sequence.length}+` : `${gapP} tour${gapP > 1 ? 's' : ''}`;
       document.getElementById('gapPink').innerText = gapPk === -1 ? `${sequence.length}+` : `${gapPk} tour${gapPk > 1 ? 's' : ''}`;
       document.getElementById('gapGreen').innerText = gapG === -1 ? `${sequence.length}+` : `${gapG} tour${gapG > 1 ? 's' : ''}`;
-    }
 
-    function analyserMatriceRisqueEtHeader() {
-      const topHeader = document.getElementById('topDynamicHeader');
-      const iconBg = document.getElementById('headerIconBg');
-      const icon = document.getElementById('headerIcon');
-      const titre = document.getElementById('headerTitre');
-      const sousTitre = document.getElementById('headerSousTitre');
-      const badgeZ = document.getElementById('badgeZScoreHeader');
-
-      if (sequence.length === 0) {
-        topHeader.className = "bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-2xl";
-        iconBg.className = "w-11 h-11 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl text-slate-300";
-        icon.className = "fa-solid fa-shield-halved";
-        titre.innerText = "Zone En Attente";
-        sousTitre.innerText = "Saisissez ou scannez vos tirages";
-        badgeZ.innerText = "Z: 0.00";
-        document.getElementById('rateTarget').innerText = "0.0%";
-        document.getElementById('valeurVolatilite').innerText = "0.00";
-        document.getElementById('clusterDensity').innerText = "0 consécutifs";
-        document.getElementById('kellyAdvice').innerText = "0.0%";
-        return;
-      }
-
-      // Taux Obtenu >= 2.00x
+      // 3. Calculs Statistiques
       const targetMatches = sequence.filter(v => v >= 2.0).length;
-      const rateTargetVal = (targetMatches / sequence.length) * 100;
+      const rateTargetVal = sequence.length > 0 ? (targetMatches / sequence.length) * 100 : 0.0;
       document.getElementById('rateTarget').innerText = rateTargetVal.toFixed(1) + "%";
 
-      // Volatilité Logarithmique
-      let stdDev = 0.0;
-      if (sequence.length > 1) {
-        const logVals = sequence.map(v => Math.log(v));
-        const mean = logVals.reduce((a, b) => a + b, 0) / logVals.length;
-        const variance = logVals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / logVals.length;
-        stdDev = Math.sqrt(variance);
-      }
-      document.getElementById('valeurVolatilite').innerText = stdDev.toFixed(2);
-      
-      const labelVol = document.getElementById('labelVolatilite');
-      if (stdDev > 1.2) labelVol.innerText = "Haute Instabilité";
-      else if (stdDev < 0.7) labelVol.innerText = "Série Fluide";
-      else labelVol.innerText = "Régime Neutre";
-
-      // Densité Grappe Crash (< 2.00x consécutifs)
       let consecutiveBlues = 0;
       for (let i = 0; i < sequence.length; i++) {
         if (sequence[i] < 2.0) consecutiveBlues++;
@@ -357,177 +381,10 @@
       }
       document.getElementById('clusterDensity').innerText = `${consecutiveBlues} consécutif${consecutiveBlues > 1 ? 's' : ''}`;
 
-      // Z-Score Dynamique
+      // Z-Score
       const sampleSize = Math.min(sequence.length, 10);
-      const recentSample = sequence.slice(0, sampleSize);
-      const countBluesRecent = recentSample.filter(v => v < 2.0).length;
-      const zScore = ((countBluesRecent / sampleSize) - 0.515) / Math.sqrt((0.515 * 0.485) / sampleSize);
-      badgeZ.innerText = `Z: ${zScore > 0 ? '+' : ''}${zScore.toFixed(2)}`;
-
-      // Conseil Kelly
-      let pReal = (targetMatches / sequence.length);
-      let kelly = (pReal * 1 - (1 - pReal)) / 1;
-      let kellyAdj = Math.max(0, Math.min(0.025, kelly * 0.25));
-      document.getElementById('kellyAdvice').innerText = (kellyAdj * 100).toFixed(1) + "%";
-
-      // Mise à jour visuelle du Header selon l'état du risque
-      if (consecutiveBlues >= 3 || stdDev > 1.25) {
-        topHeader.className = "bg-gradient-to-r from-rose-950 via-rose-900 to-slate-900 border-b border-rose-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-rose-900/30 shadow-2xl";
-        iconBg.className = "w-11 h-11 rounded-xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-xl text-rose-400 shadow-lg shadow-rose-500/20 animate-pulse";
-        icon.className = "fa-solid fa-triangle-exclamation";
-        titre.innerText = "🔴 ZONE À RISQUE ÉLEVÉ";
-        sousTitre.innerText = "Accumulation de crashes (<2x). Abstention conseillée.";
-      } 
-      else if (zScore <= -0.8 && stdDev < 0.95) {
-        topHeader.className = "bg-gradient-to-r from-emerald-950 via-emerald-900 to-slate-900 border-b border-emerald-500/50 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-emerald-900/30 shadow-2xl";
-        iconBg.className = "w-11 h-11 rounded-xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-xl text-emerald-400 shadow-lg shadow-emerald-500/20";
-        icon.className = "fa-solid fa-circle-check";
-        titre.innerText = "🟢 ZONE FAVORABLE (Convergence)";
-        sousTitre.innerText = "Fenêtre statistique propice au retour vers la moyenne.";
-      } 
-      else {
-        topHeader.className = "bg-gradient-to-r from-blue-950 via-slate-900 to-slate-900 border-b border-blue-500/40 sticky top-0 z-50 px-4 py-4 transition-all duration-500 shadow-blue-900/20 shadow-2xl";
-        iconBg.className = "w-11 h-11 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-xl text-blue-400 shadow-lg shadow-blue-500/20";
-        icon.className = "fa-solid fa-scale-balanced";
-        titre.innerText = "🔵 ZONE NEUTRE / ÉQUILIBRÉE";
-        sousTitre.innerText = "Distribution régulière alignée avec le comportement théorique.";
-      }
-    }
-
-    // --- OCR SCAN ---
-    async function capturerEtAnalyserFrame() {
-      if (!streamCamera || !ocrWorker || isProcessingFrame) return;
-
-      isProcessingFrame = true;
-      const status = document.getElementById('ocrStatus');
-      status.innerText = "Analyse...";
-      status.className = "text-[10px] bg-amber-500 text-slate-950 px-2 py-0.5 rounded font-mono font-bold";
-
-      const video = document.getElementById('videoFeed');
-      const canvas = document.getElementById('ocrCanvas');
-      const ctx = canvas.getContext('2d');
-
-      if (!video.videoWidth || !video.videoHeight) {
-        isProcessingFrame = false;
-        return;
-      }
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      try {
-        const result = await ocrWorker.recognize(canvas);
-        const matches = result.data.text.match(/\b\d{1,4}\.\d{1,2}\b/g);
-
-        if (matches && matches.length > 0) {
-          let recs = matches.map(parseFloat).filter(v => v >= 1.0 && v <= 10000.0);
-          let ajouts = 0;
-          recs.forEach(v => {
-            if (!sequence.includes(v)) {
-              sequence.unshift(v);
-              ajouts++;
-            }
-          });
-
-          if (ajouts > 0) {
-            actualiserToutesLesAnalyses();
-            if (navigator.vibrate) navigator.vibrate(80);
-          }
-        }
-        status.innerText = "OCR Prêt";
-        status.className = "text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-mono font-bold";
-      } catch (err) {
-        status.innerText = "Erreur OCR";
-        status.className = "text-[10px] bg-rose-600 text-white px-2 py-0.5 rounded font-mono font-bold";
-      } finally {
-        isProcessingFrame = false;
-      }
-    }
-
-    function lancerScanInstantane() {
-      capturerEtAnalyserFrame();
-    }
-
-    function toggleAutoScan() {
-      const btn = document.getElementById('btnAutoScan');
-      if (autoScanInterval) {
-        clearInterval(autoScanInterval);
-        autoScanInterval = null;
-        btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Auto-Scan Continu';
-        btn.className = "bg-slate-800 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
-      } else {
-        autoScanInterval = setInterval(capturerEtAnalyserFrame, 1800);
-        btn.innerHTML = '<i class="fa-solid fa-stop"></i> Arrêter Auto-Scan';
-        btn.className = "bg-rose-600 text-white font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2";
-      }
-    }
-
-    // --- ARCHIVES ET MOTIFS ---
-    function chargerSessionsSauvegardees() {
-      return JSON.parse(localStorage.getItem('aviator_sessions_history') || '[]');
-    }
-
-    function sauvegarderSession() {
-      if (sequence.length === 0) {
-        alert("Ajoutez des tirages avant d'enregistrer.");
-        return;
-      }
-      let history = chargerSessionsSauvegardees();
-      history.push({
-        id: Date.now(),
-        date: new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR'),
-        data: [...sequence]
-      });
-      localStorage.setItem('aviator_sessions_history', JSON.stringify(history));
-      actualiserToutesLesAnalyses();
-      alert("Session enregistrée !");
-    }
-
-    function effacerSessionActuelle() {
-      if (sequence.length === 0) return;
-      if (confirm("Réinitialiser les tirages actuels ?")) {
-        sequence = [];
-        actualiserToutesLesAnalyses();
-      }
-    }
-
-    function analyserMotifsIdentiques() {
-      const history = chargerSessionsSauvegardees();
-      document.getElementById('savedCount').innerText = `${history.length} session(s)`;
-
-      if (sequence.length < 3) {
-        document.getElementById('patternTitle').innerText = "---";
-        document.getElementById('patternMatchResult').innerText = "Saisissez au moins 3 tirages pour rechercher des motifs.";
-        return;
-      }
-
-      const motifActuel = sequence.slice(0, 3).map(getColorType).join('-');
-      document.getElementById('patternTitle').innerText = motifActuel.toUpperCase();
-
-      let occurrences = 0;
-      let suiviDeuxPlus = 0;
-
-      history.forEach(sess => {
-        const sData = sess.data;
-        for (let i = 0; i < sData.length - 3; i++) {
-          let sub = sData.slice(i, i + 3).map(getColorType).join('-');
-          if (sub === motifActuel) {
-            occurrences++;
-            if (sData[i + 3] >= 2.0) suiviDeuxPlus++;
-          }
-        }
-      });
-
-      if (occurrences === 0) {
-        document.getElementById('patternMatchResult').innerText = `Motif [${motifActuel}] non répertorié dans vos archives.`;
-      } else {
-        let pct = ((suiviDeuxPlus / occurrences) * 100).toFixed(1);
-        document.getElementById('patternMatchResult').innerHTML = `Motif trouvé <strong>${occurrences} fois</strong>. Dans <strong>${pct}%</strong> des cas, le tirage suivant était <strong>≥ 2.00x</strong>.`;
-      }
-    }
-
-    actualiserToutesLesAnalyses();
-  </script>
-</body>
-</html>
+      let zScore = 0.0;
+      if (sampleSize > 0) {
+        const recentSample = sequence.slice(0, sampleSize);
+        const countBluesRecent = recentSample.filter(v => v < 2.0).length;
+        zScore = ((countBluesRecent / sampleSize) - 0.51
