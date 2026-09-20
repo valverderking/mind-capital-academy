@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BetMind AI Pro - Moteur Quantitatif & Monte-Carlo</title>
+  <title>BetMind AI Pro v3.0 - Scanner Quant & Monte-Carlo</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -21,26 +21,51 @@
           <p class="text-xs text-slate-400">Algorithme Quantitatif & Monte-Carlo</p>
         </div>
       </div>
-      <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono font-medium">v2.0 Quant</span>
+      <span class="text-xs bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2.5 py-1 rounded-full font-mono font-medium">v3.0 Ultra</span>
     </div>
   </header>
 
   <main class="max-w-2xl mx-auto px-4 mt-6 space-y-6">
 
-    <!-- CHARGEMENT AUTOMATIQUE DES COTES (API) -->
-    <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5 shadow-xl">
-      <div class="flex items-center gap-2 mb-3">
-        <i class="fa-solid fa-bolt text-blue-400"></i>
-        <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Chargement Automatique en Direct</h2>
+    <!-- CHARGEMENT & SCANNER MULTI-LIGUES -->
+    <div class="bg-slate-900 border border-blue-500/30 rounded-2xl p-5 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-bolt text-blue-400"></i>
+          <h2 class="text-sm font-bold text-blue-400 uppercase tracking-wider">Centre d'Analyse Multi-Ligues</h2>
+        </div>
+        <span class="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded font-mono">Auto-xG Actif</span>
       </div>
-      <div class="space-y-3">
-        <button type="button" onclick="chargerMatchsEnDirect()" id="btnApi" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 text-sm">
-          <i class="fa-solid fa-arrows-rotate"></i> Charger les matchs à venir
-        </button>
-        <select id="listeMatchs" onchange="selectionnerMatch()" class="hidden w-full bg-slate-950 p-3 rounded-xl border border-slate-700 text-white text-sm focus:outline-none focus:border-blue-500">
-          <option value="">-- Sélectionnez un match disponible --</option>
+
+      <!-- Choix de la Ligue -->
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Sélectionner le Championnat :</label>
+        <select id="selectLigue" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-blue-500">
+          <option value="soccer_france_ligue_one">🇫🇷 Ligue 1 (France)</option>
+          <option value="soccer_spain_la_liga">🇪🇸 La Liga (Espagne)</option>
+          <option value="soccer_epl">🇬🇧 Premier League (Angleterre)</option>
+          <option value="soccer_italy_serie_a">🇮🇹 Serie A (Italie)</option>
+          <option value="soccer_germany_bundesliga">🇩🇪 Bundesliga (Allemagne)</option>
+          <option value="soccer_uefa_champions_league">🇪🇺 Ligue des Champions</option>
         </select>
       </div>
+
+      <!-- Filtre 70%+ Probabilité -->
+      <div class="flex items-center gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800">
+        <input type="checkbox" id="filtre70" onchange="appliquerFiltres()" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+        <label for="filtre70" class="text-xs font-bold text-amber-400 cursor-pointer flex items-center gap-1.5">
+          <i class="fa-solid fa-star"></i> Filtrer uniquement les matchs avec Confiance / Probabilité ≥ 65-70%
+        </label>
+      </div>
+
+      <button type="button" onclick="chargerMatchsEnDirect()" id="btnApi" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 text-sm">
+        <i class="fa-solid fa-arrows-rotate"></i> Charger & Scanner les Matchs
+      </button>
+
+      <!-- Liste déroulante des résultats -->
+      <select id="listeMatchs" onchange="selectionnerMatch()" class="hidden w-full bg-slate-950 p-3 rounded-xl border border-slate-700 text-white text-sm focus:outline-none focus:border-blue-500">
+        <option value="">-- Choisissez un match --</option>
+      </select>
     </div>
 
     <!-- SECTION 1: DONNÉES MARCHÉ & CÔTES BOOKMAKER -->
@@ -79,18 +104,23 @@
 
     <!-- SECTION 2: AJUSTEMENT CONTEXTUEL & POISSON (XG) -->
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-      <div class="flex items-center gap-2 mb-2">
-        <i class="fa-solid fa-sliders text-cyan-400"></i>
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Ajustement Contextuel & Poisson (xG)</h2>
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-cyan-400"></i>
+          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">2. Ajustement xG & Paramètres</h2>
+        </div>
+        <button type="button" onclick="estimerAutoXG()" class="text-[11px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-1 rounded-lg hover:bg-cyan-500/20">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Recalculer Auto-xG
+        </button>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Dom)</label>
+          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts / xG (Dom)</label>
           <input type="number" step="0.1" id="xgA" value="1.8" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
         </div>
         <div>
-          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts Marqués (Ext)</label>
+          <label class="block text-xs text-slate-400 mb-1">Moyenne Buts / xG (Ext)</label>
           <input type="number" step="0.1" id="xgB" value="1.3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500">
         </div>
       </div>
@@ -126,7 +156,7 @@
     <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
       <div class="flex items-center gap-2 mb-2">
         <i class="fa-solid fa-shield-halved text-purple-400"></i>
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Gestion du Capital & Contrôle Anti-Biais</h2>
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">3. Capital & Contrôle Anti-Biais</h2>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
@@ -186,6 +216,13 @@
         </div>
       </div>
 
+      <!-- Badge pépite 70%+ -->
+      <div id="badgePepite" class="hidden p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-center">
+        <p class="text-xs font-bold text-amber-400 flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-fire text-amber-400"></i> PARI À HAUTE CONFIANCE (Probabilité Réelle ≥ 65-70%)
+        </p>
+      </div>
+
       <!-- Conseil Kelly -->
       <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between">
         <div>
@@ -205,34 +242,89 @@
     const API_KEY = "b48d4d05af6b2b2ebe7e3ba4976e88af";
     let listeMatchsData = [];
 
-    // --- CHARGEMENT API ---
+    // --- FONCTION SPÉCIALE : MOTEUR Auto-xG (Estimation par Inversion du Marché) ---
+    function estimerAutoXG() {
+      const c1 = parseFloat(document.getElementById('cote1').value) || 2.0;
+      const c2 = parseFloat(document.getElementById('cote2').value) || 3.0;
+
+      // Inversion implicite basée sur le ratio des cotes
+      let baseGoal = 2.6; // Moyenne de buts standard dans un match
+      let prob1 = 1 / c1;
+      let prob2 = 1 / c2;
+      let sumProb = prob1 + prob2;
+
+      let estXgA = (prob1 / sumProb) * baseGoal;
+      let estXgB = (prob2 / sumProb) * baseGoal;
+
+      document.getElementById('xgA').value = estXgA.toFixed(1);
+      document.getElementById('xgB').value = estXgB.toFixed(1);
+    }
+
+    // --- CHARGEMENT DES MATCHS ---
     async function chargerMatchsEnDirect() {
       const btn = document.getElementById('btnApi');
-      btn.innerText = "Chargement des cotes...";
+      const ligue = document.getElementById('selectLigue').value;
+      btn.innerText = "Analyse & Scan des matchs en cours...";
       btn.disabled = true;
 
       try {
-        const response = await fetch(`https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`);
+        const response = await fetch(`https://api.the-odds-api.com/v4/sports/${ligue}/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`);
         if (!response.ok) throw new Error("Erreur API");
 
         listeMatchsData = await response.json();
-        const select = document.getElementById('listeMatchs');
-        select.innerHTML = '<option value="">-- Choisissez un match disponible --</option>';
+        appliquerFiltres();
 
-        listeMatchsData.forEach((match, index) => {
-          const option = document.createElement('option');
-          option.value = index;
-          option.textContent = `${match.home_team} vs ${match.away_team}`;
-          select.appendChild(option);
-        });
-
-        select.classList.remove('hidden');
-        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Actualiser la liste';
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Actualiser & Re-scanner';
       } catch (err) {
-        alert("Erreur de chargement. Vérifiez votre clé d'accès ou vos crédits API.");
-        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Charger les matchs à venir';
+        alert("Erreur de chargement. Vérifiez votre clé d'accès ou l'ouverture de la ligue.");
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Charger & Scanner les Matchs';
       } finally {
         btn.disabled = false;
+      }
+    }
+
+    // --- FILTRE DES MATCHS (Inclus Filtre Pepite 70%+) ---
+    function appliquerFiltres() {
+      const select = document.getElementById('listeMatchs');
+      const filtre70 = document.getElementById('filtre70').checked;
+      select.innerHTML = '<option value="">-- Sélectionnez un match --</option>';
+
+      let compteur = 0;
+
+      listeMatchsData.forEach((match, index) => {
+        if (!match.bookmakers || match.bookmakers.length === 0) return;
+
+        const bookmaker = match.bookmakers[0];
+        const market = bookmaker.markets.find(m => m.key === 'h2h');
+        if (!market) return;
+
+        const homeOutcome = market.outcomes.find(o => o.name === match.home_team);
+        const awayOutcome = market.outcomes.find(o => o.name === match.away_team);
+
+        // Estimation rapide des probabilités
+        let maxProb = 0;
+        if (homeOutcome && awayOutcome) {
+          let pHome = (1 / homeOutcome.price) * 100;
+          let pAway = (1 / awayOutcome.price) * 100;
+          maxProb = Math.max(pHome, pAway);
+        }
+
+        // Si le filtre 70%+ est activé, on conserve seulement les matchs avec forte probabilité
+        if (filtre70 && maxProb < 65) {
+          return; // ignorer ce match
+        }
+
+        const option = document.createElement('option');
+        option.value = index;
+        let tag = maxProb >= 65 ? "⭐ [70%+ Confiance] " : "";
+        option.textContent = `${tag}${match.home_team} vs ${match.away_team}`;
+        select.appendChild(option);
+        compteur++;
+      });
+
+      select.classList.remove('hidden');
+      if (filtre70 && compteur === 0) {
+        alert("Aucun match avec probabilité ≥ 65-70% trouvé dans ce championnat actuellement.");
       }
     }
 
@@ -241,11 +333,6 @@
       if (index === "") return;
 
       const match = listeMatchsData[index];
-      if (!match || !match.bookmakers || match.bookmakers.length === 0) {
-        alert("Aucune cote trouvée pour ce match.");
-        return;
-      }
-
       const bookmaker = match.bookmakers[0];
       const market = bookmaker.markets.find(m => m.key === 'h2h');
       if (!market) return;
@@ -259,6 +346,9 @@
       if (homeOutcome) document.getElementById('cote1').value = homeOutcome.price;
       if (drawOutcome) document.getElementById('coteN').value = drawOutcome.price;
       if (awayOutcome) document.getElementById('cote2').value = awayOutcome.price;
+
+      // Auto-calcul de xG
+      estimerAutoXG();
     }
 
     function actualiserIndicateurBiais(valeur) {
@@ -316,44 +406,4 @@
 
       const pBook = 1 / cote;
       
-      // Ajustement anti-biais
-      const biais = parseFloat(document.getElementById('curseurAffinite').value) / 100;
-      const pRealAjustee = pReal * (1 - (biais * 0.2)); 
-
-      // Calcul EV
-      const ev = (pRealAjustee * cote) - 1;
-      const evPourcent = (ev * 100).toFixed(1);
-
-      // Critère de Kelly (Fractionnaire 25% + Plafond 4%)
-      const b = cote - 1;
-      let kelly = ((pRealAjustee * b) - (1 - pRealAjustee)) / b;
-      kelly = kelly * 0.25; // Kelly prudent
-      if (kelly < 0) kelly = 0;
-      if (kelly > 0.04) kelly = 0.04; // Plafond 4% max
-
-      const capital = parseFloat(document.getElementById('capital').value);
-      const mise = Math.round(capital * kelly);
-
-      // Affichage
-      document.getElementById('zoneResultats').classList.remove('hidden');
-      document.getElementById('probBookmaker').innerText = (pBook * 100).toFixed(1) + '%';
-      document.getElementById('barreBookmaker').style.width = (pBook * 100) + '%';
-      document.getElementById('probReelle').innerText = (pRealAjustee * 100).toFixed(1) + '%';
-      document.getElementById('barreReelle').style.width = (pRealAjustee * 100) + '%';
-
-      const badgeEV = document.getElementById('badgeEV');
-      if (ev > 0) {
-        badgeEV.innerText = `EV: +${evPourcent}% (Value)`;
-        badgeEV.className = "text-xs px-2.5 py-1 rounded-full font-bold font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-      } else {
-        badgeEV.innerText = `EV: ${evPourcent}% (Pas de Value)`;
-        badgeEV.className = "text-xs px-2.5 py-1 rounded-full font-bold font-mono bg-rose-500/20 text-rose-400 border border-rose-500/30";
-      }
-
-      document.getElementById('montantMise').innerText = mise.toLocaleString('fr-FR') + ' FCFA';
-      document.getElementById('pourcentageMise').innerText = (kelly * 100).toFixed(1) + '%';
-    }
-  </script>
-</body>
-            </html>
-            
+      // Ajust
