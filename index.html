@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind & Capital Academy | Maîtrisez vos Décisions & Votre Discipline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased flex flex-col min-h-screen">
+
+    <!-- NAVIGATION -->
+    <nav class="border-b border-slate-800 bg-slate-900/90 backdrop-blur fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="#" class="text-xl font-extrabold tracking-wider text-amber-400">MIND <span class="text-white">& CAPITAL</span></a>
+            <div class="hidden md:flex space-x-8 text-sm font-medium items-center">
+                <a href="#programme" class="hover:text-amber-400 transition">Programme</a>
+                <a href="#offres" class="hover:text-amber-400 transition">Formations & Tarifs</a>
+                <a href="#mentions" class="hover:text-amber-400 transition">Mentions Légales</a>
+                <a href="#offres" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-lg font-bold transition">Espace Membre</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="pt-32 pb-20 px-6 max-w-5xl mx-auto text-center flex-grow">
+        <span class="text-xs font-semibold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-4 py-1.5 rounded-full border border-amber-400/20">
+            Psychologie Décisionnelle • Biais Cognitifs • Gestion des Risques
+        </span>
+        <h1 class="text-4xl md:text-6xl font-extrabold mt-8 leading-tight">
+            Éliminez les Erreurs de Jugement.<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200">
+                Prenez des Décisions Hautement Rentables.
+            </span>
+        </h1>
+        <p class="mt-6 text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Découvrez les modèles mentaux et les cadres décisionnels utilisés par l'élite financière et stratégique pour maîtriser leurs émotions et maximiser leurs résultats.
+        </p>
+        <div class="mt-8 flex justify-center gap-4">
+            <a href="#offres" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-lg font-bold px-8 py-4 rounded-xl shadow-lg shadow-amber-500/20 transition transform hover:-translate-y-0.5">
+                Rejoindre la Masterclass
+            </a>
+        </div>
+    </section>
+
+    <!-- PROGRAMME -->
+    <section id="programme" class="py-16 bg-slate-800/40 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">Les 3 Piliers du Système</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <div class="text-amber-400 text-2xl font-bold mb-2">01. Audit des Biais</div>
+                    <p class="text-slate-400 text-sm">Identification systématique des pièges psychologiques (aversion à la perte, biais de confirmation, FOMO).</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <div class="text-amber-400 text-2xl font-bold mb-2">02. Cadrage du Risque</div>
+                    <p class="text-slate-400 text-sm">Application de règles mathématiques et probabilistes pour calibrer l'exposition au risque et maximiser l'espérance de gain.</p>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                    <div class="text-amber-400 text-2xl font-bold mb-2">03. Discipline comportementale</div>
+                    <p class="text-slate-400 text-sm">Mise en place de protocoles de décision stricts pour supprimer l'impulsivité dans la prise de décision.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OFFRES ET TARIFS -->
+    <section id="offres" class="py-20 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-4">Nos Formations & Abonnements</h2>
+            <p class="text-slate-400 text-center max-w-xl mx-auto mb-12 text-sm">Choisissez la formule adaptée à vos objectifs et accédez immédiatement au contenu.</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- FORMATION INDIVIDUELLE -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 flex flex-col justify-between hover:border-amber-500/50 transition">
+                    <div>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Formation Accès À Vie</span>
+                        <h3 class="text-2xl font-bold mt-2">Masterclass : Système Décisionnel</h3>
+                        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
+                            Un cursus complet pour auditer vos biais, structurer vos choix et appliquer un cadrage de risque strict dans tous vos projets.
+                        </p>
+                        <div class="mt-6 text-4xl font-extrabold text-white">147 € <span class="text-xs font-normal text-slate-400">Paiement unique</span></div>
+                        <ul class="mt-6 space-y-3 text-sm text-slate-300">
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> 12 Modules vidéo en accès illimité</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> Matrice d'évaluation des risques (Excel / Notion)</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> Mises à jour gratuites à vie</li>
+                        </ul>
+                    </div>
+                    <button onclick="payer('price_formation_id')" class="mt-8 w-full bg-slate-700 hover:bg-amber-500 hover:text-slate-950 text-amber-400 font-bold py-3.5 rounded-xl border border-amber-500/30 transition">
+                        S'inscrire à la Masterclass
+                    </button>
+                </div>
+
+                <!-- ABONNEMENT -->
+                <div class="bg-slate-800 border-2 border-amber-500 rounded-2xl p-8 flex flex-col justify-between shadow-2xl shadow-amber-500/10 relative">
+                    <span class="absolute -top-3.5 right-6 bg-amber-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Recommandé</span>
+                    <div>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Abonnement Mensuel</span>
+                        <h3 class="text-2xl font-bold mt-2">Inner Circle Performance</h3>
+                        <p class="text-slate-400 mt-3 text-sm leading-relaxed">
+                            Accès continu à la communauté privée d'analyse, aux synthèses hebdomadaires de risques et aux sessions de coaching.
+                        </p>
+                        <div class="mt-6 text-4xl font-extrabold text-white">29 € <span class="text-xs font-normal text-slate-400">/ mois (Sans engagement)</span></div>
+                        <ul class="mt-6 space-y-3 text-sm text-slate-300">
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> Briefings & Analyses hebdomadaires</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> Accès au groupe privé d'entraide</li>
+                            <li class="flex items-center gap-2"><span class="text-amber-400">✔</span> Session interactive mensuelle</li>
+                        </ul>
+                    </div>
+                    <button onclick="payer('price_abonnement_id')" class="mt-8 w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition">
+                        Rejoindre l'Inner Circle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENTIONS LEGALES (VERIFICATION STRIPE) -->
+    <section id="mentions" class="py-12 bg-slate-950 border-t border-slate-800 text-xs text-slate-400">
+        <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
+            <div>
+                <h4 class="font-bold text-slate-200 text-sm mb-3">Mind & Capital Academy</h4>
+                <p>Éditeur de services de formation en ligne et accompagnement à la prise de décision stratégique.</p>
+                <p class="mt-2">Contact Support Client : <a href="mailto:contact@mindcapital-academy.com" class="text-amber-400 underline">contact@mindcapital-academy.com</a></p>
+            </div>
+            <div>
+                <h4 class="font-bold text-slate-200 text-sm mb-3">Livraison & Rétractation</h4>
+                <p>Accès numérique immédiat après paiement via Stripe. Résiliation de l'abonnement à tout moment sur simple demande par email ou depuis votre espace.</p>
+                <p class="mt-2">&copy; 2026 Mind & Capital Academy. Tous droits réservés.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const stripe = Stripe('pk_test_votre_cle_publique_stripe');
+        function payer(priceId) {
+            stripe.redirectToCheckout({
+                lineItems: [{ price: priceId, quantity: 1 }],
+                mode: priceId.includes('abonnement') ? 'subscription' : 'payment',
+                successUrl: window.location.origin + '/?status=success',
+                cancelUrl: window.location.origin + '/?status=canceled',
+            });
+        }
+    </script>
+</body>
+</html>
